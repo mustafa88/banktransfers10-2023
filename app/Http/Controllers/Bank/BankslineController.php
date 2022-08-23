@@ -80,17 +80,43 @@ class BankslineController extends Controller
      * @param $id_bank מספר בנק
      * שורות בנק ללא סוג שורה
      */
-    public function showTableNoTypeLine($id_bank){
+    public function showTableNoTypeLine(Request $request ,$id_bank){
+
+        $showLineBankTitleTwo = 0;
+        if($request->showLineBankTitleTwo!=null){
+            $showLineBankTitleTwo = $request->showLineBankTitleTwo;
+        }
+
         $banksline = Banksline::with(['banks', 'titletwo', 'enterprise'])
             ->where('id_bank', '=', $id_bank)
         ->whereNull('id_titletwo');
-            //->where('datemovement', '>=', '2022-01-01')
-            //->where('datemovement', '<=', '2022-12-31');
         $banksline =   $banksline->get();
 
-        //for($i=0;i<len($banksline);$i++){
-            return $banksline[0];
-       // }
+        $banksline_a = array();
+        for($i=0;$i<count($banksline);$i++){
+            $resChk = \DB::table('Banksline')
+                ->select('id_titletwo', \DB::raw('count(*) as total_idtwo'))
+                ->where('id_bank', '=', $id_bank)
+                ->where('description', '=', $banksline[$i]['description'])
+                ->whereNotNull('id_titletwo')
+                ->groupBy('id_titletwo')
+                ->orderBy(\DB::raw('count(*)'),'desc')
+                ->get();
+            $resChk = json_decode($resChk, true);
+
+            $ofer_title_two = 0;
+            if(isset($resChk[0]['total_idtwo']) and $resChk[0]['total_idtwo']>1){
+                $ofer_title_two = $resChk[0]['id_titletwo'];
+            }
+            $banksline[$i]['ofer_title_two']= $ofer_title_two;
+
+            if($showLineBankTitleTwo!='0' and $ofer_title_two!=$showLineBankTitleTwo){
+                continue;
+            }
+            $banksline_a[]=$banksline[$i];
+        }
+        $banksline = $banksline_a;
+
         //return $banksline;
         $bank = banks::with(['enterprise', 'projects'])->find($id_bank);
         //return $bank;
@@ -100,7 +126,7 @@ class BankslineController extends Controller
             ->with(
                 [
                     'pageTitle' => "תנועות בנק ללא סוג",
-                    'subTitle' => 'תנועות בנק בהמתנה לחלוקה שוורת',
+                    'subTitle' => 'תנועות בנק בהמתנה למיון לפי סוג',
                 ]
             );
     }
@@ -280,8 +306,13 @@ class BankslineController extends Controller
     }
 
 
+    /*
+     * עדכון גורף לשורות
+     * עדכון סוג סורה או עמותה או חלוקת שורה בין כל הארגונים
+     */
     public function storeSelect(Request $requset, $id_bank)
     {
+        //לא בשימוש - כפתורים שמבעצים פעולה זו נסגרו ועברו למוקם אחר
         $selectbox = $requset->selectbox;
         if(isset($requset->btn_savetitle)){
             //עדכון גורף לסוג תנועה
@@ -298,6 +329,7 @@ class BankslineController extends Controller
             //echo $selectbox[0];
             foreach ($selectbox as $v_id_line){
                 //חלוקה שווה לשורה בין כל הארגונים
+                //בדרך כלל רק לעמולת בנק
                 $this->storeDivDetail($v_id_line);
             }
             //ddd($selectbox);
@@ -312,6 +344,8 @@ class BankslineController extends Controller
     /**
      * @param $id_line
      * מצביע חלוקה שווה לשורה בין כל הפרויקטים המשתתפים
+     * חלוקת שורה בין כל הארגונים
+     * שימוש לעמלות בנק
      */
     public function storeDivDetail($id_line)
     {
@@ -332,6 +366,9 @@ class BankslineController extends Controller
             ddd('error id_titletwo!=2');
         }
 
+        if($bankslin['id_titletwo']!='1' ){
+            return false;
+        }
         $project = $bankslin['enterprise']['project'];
 
         $countDiv=0; //כמות פרויקטים וערים משתתפים או שייכים
@@ -408,6 +445,44 @@ class BankslineController extends Controller
         $this->checkFixLine($id_line);
         return true;
 
+    }
+
+    /**
+     * @param Request $request
+     * @param $id_bank מספר בנק
+     * שמירת סוגי שורות בנק
+     */
+    public function storeTypeLine(Request $request ,$id_bank)
+    {
+        $selectTitleTwo = $request->selectTitleTwo;
+
+        for ($i=0; $i<count($selectTitleTwo);$i++){
+            $select = explode("*", $selectTitleTwo[$i]);
+            $id_line = $select[0];
+            $typeTitleTwo = $select[1];
+
+            //dd($typeTitleTwo);
+            //continue;
+            //delete details line
+            Banksdetail::where('id_line', '=', $id_line)->delete();
+
+
+            if($typeTitleTwo==0){
+                $typeTitleTwo=NULL;
+            }
+            Banksline::where('id_bank', '=', $id_bank)->where('id_line', '=', $id_line)->update([
+                'id_titletwo' => $typeTitleTwo]);
+
+            if($typeTitleTwo=='1'){
+                //עמלת בנק
+                //חלוקת שורה עמלת בנק בין כל הארגונים בעמותה
+                $this->storeDivDetail($id_line);
+            }
+
+
+        }
+
+        return redirect()->back()->with("success", "تم الحفظ بنجاح");
     }
 
     /**

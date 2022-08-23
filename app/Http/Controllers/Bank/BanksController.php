@@ -89,8 +89,12 @@ class BanksController extends Controller
     public function  storeFileCsv(Request $requset)
     {
 
-        //ddd($requset->filecsv);
+
         //https://medium.com/technology-hits/how-to-import-a-csv-excel-file-in-laravel-d50f93b98aa4
+
+        if($requset->enterp=='0'){
+            return redirect()->back()->withErrors(['msg' => "يرجى اختيار جمعية"]);
+        }
 
         $id_bank = $requset->numberbank;
         $bank = Banks::find($id_bank);
@@ -102,6 +106,9 @@ class BanksController extends Controller
         if (!$file) {
             return redirect()->back()->withErrors(['msg' => "لم تتم قرائه الملف"]);
         }
+        $enterp =$requset->enterp;
+
+        ddd($requset);
         //return redirect()->back()->with("success", "تم الحفظ بنجاح  سطر جديد");
        // return redirect()->back()->withErrors(['msg' => 'The Message']);
         //return redirect()->back()->with("success", "aaaa");
@@ -204,6 +211,7 @@ class BanksController extends Controller
                 'asmcta' => $asmcta,
                 'amountmandatory' => $amountmandatory,
                 'amountright' => $amountright,
+                'id_enter' => $enterp,
                 'duplicate' => 0,
                 'nobank' => 0,
                 'done' => 0,

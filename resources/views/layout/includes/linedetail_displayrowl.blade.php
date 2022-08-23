@@ -36,6 +36,12 @@
                         class="far fa-edit"></i> עריכה</a>
                 <a class="dropdown-item delete_row" href="javascript:void(0)" data-idline="{{$rowBanksLine['id_line']}}"><i
                         class="far fa-trash-alt"></i> מחיקה</a>
+
+                <a class="dropdown-item titletwo_row" href="javascript:void(0)" data-idline="{{$rowBanksLine['id_line']}}"><i
+                        class="far fa-edit"></i> עדכון סוג תנועה</a>
+                <a class="dropdown-item enter_rowp" href="javascript:void(0)" data-idline="{{$rowBanksLine['id_line']}}"><i
+                        class="far fa-edit"></i> עדכון עמותה</a>
+
                 @if($rowBanksLine['duplicate']==1)
                     <a class="dropdown-item dulicate_row" href="javascript:void(0)"
                        data-idline="{{$rowBanksLine['id_line']}}"><i class="far fa-check-circle"></i> אישור שורה</a>

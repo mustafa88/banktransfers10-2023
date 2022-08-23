@@ -410,6 +410,7 @@ class BanksdetailController extends Controller
     }
 
 
+
     public function storeAjax(BanksdetailRequset $requset, $id_line)
     {
         $bankslin = Banksline::with(['banks', 'titletwo', 'enterprise.project', 'banksdetail'])

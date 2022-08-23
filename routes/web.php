@@ -208,9 +208,12 @@ Route::group(['prefix' => 'managebanks/linebanks', 'namespace' => 'Bank', 'middl
 });
 
 
-Route::group(['prefix' => 'managebanks/help_chosse_type_line', 'namespace' => 'Bank', 'middleware' => ['web']], function () {
+Route::group(['prefix' => 'managebanks/help_chosse_type_line/{id_bank}', 'namespace' => 'Bank', 'middleware' => ['web']], function () {
 
-    Route::get('show/{id_bank}', [BankslineController::class ,'showTableNoTypeLine'])->name('notypeline.show');
+    Route::get('show', [BankslineController::class ,'showTableNoTypeLine'])->name('notypeline.show');
+
+    Route::post('story', [BankslineController::class ,'storeTypeLine'])->name('notypeline.storetypeline');
+
 });
 
 Route::group(['prefix' => 'managebanks/linedetail', 'namespace' => 'Bank', 'middleware' => ['web']], function () {

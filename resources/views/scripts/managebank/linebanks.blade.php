@@ -285,6 +285,75 @@
 
         });
 
+        $(document).on('click', 'a.titletwo_row', function (e) {
+            alert('בעבודה...');
+            {{--
+            dataObj = {};
+            dataObj['idline']= $("#statos").val();
+
+            let url= '{{ route('linebanks.showrowdetils',$bank['id_bank']) }}';
+            url +="/"+idline;
+            //alert(url);
+            let resultAjax = SendToAjax(url,'GET','-1');
+            if(resultAjax==undefined){
+                notify('حدث خطأ','error');
+                return false;
+            }
+
+            Swal.fire({
+                title: '<strong>חלוקת שורה</strong>',
+                //icon: 'info',
+                html: resultAjax['html'],
+                width: 1000,
+                showDenyButton: true,
+                //showCancelButton: true,
+                confirmButtonText: 'حفظ',
+                denyButtonText: `الغاء`,
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                    var dataObj = {};
+                    document.querySelectorAll('.inptrowdetl').forEach(function(el){
+                        dataObj[el.id]= el.value;
+                    });
+                    dataObj['scome']='1';
+                    //console.log(dataObj);
+                    var counterSave=0;
+                    for (let i=0;i<selectbox.length;i++) {
+                        var idline_aj = $(selectbox[i]).val();
+                        let url= '{{ route('linedetail.storemultirowajax',$bank['id_bank']) }}';
+                        url +="/"+idline_aj;
+                        let resultAjax = SendToAjax(url,'POST',null,dataObj);
+                        //console.log(resultAjax);
+                        if(resultAjax!=undefined && resultAjax['status']!=undefined && resultAjax['status']==true){
+                            counterSave++;
+                            $(selectbox[i]).prop("checked", false);
+                        }
+                        //
+                        var nRowaa = $($("input[name='selectbox[]'][value='"+idline_aj+"']")).parents('tr')[0];
+                        //console.log(nRowaa);
+
+                        let numberRow = myTable.row(nRowaa)[0][0];
+                        let row = myTable.row(numberRow);
+                        let newData = resultAjax.rowHtmlArr;
+                        for (let i = 0; i < newData.length; i++) {
+                            myTable.cell(row, i).data(newData[i]);
+                        }
+                        myTable.draw();
+
+                    }
+
+                    Swal.fire(" נמשרו " + counterSave + " שורות מתוך " + selectbox.length + " שורות "  )
+                } else if (result.isDenied) {
+                    Swal.fire('שינוי לא בוצע', '', 'info')
+                }
+            })
+            --}}
+        });
+
+
+
+
         function InitPage(){
             myRowTable=null;
             $("#id_line").val('0');

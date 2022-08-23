@@ -139,7 +139,7 @@
         @csrf
 
     <div class="card card-default">
-        <div class="card-header">עדכון גורף לכל השורות המסומנות</div>
+        <div class="card-header">פעולות עבור שורות בנק</div>
         <div class="card-body">
 
             @if (Session::has('successupdateselect'))
@@ -149,6 +149,7 @@
             @endif
 
                 <div class="form-row align-items-center">
+                    {{--
                     <div class="col-auto">
                         <label for="id_titletwo">עדכון גורף ל - סוג תנועה</label>
                         <select class="form-control custom-select custom-select-sm " name="idselect_titletwo" id="idselect_titletwo"  >
@@ -183,9 +184,16 @@
                     <div class="col-auto">
                         <input type="submit" name="btn_saveenter" id="btn_saveenter" value="حفظ" class="btn btn-primary mb-2">
                     </div>
+                    --}}
 
                     <div class="col-auto">
-                        <input type="submit" name="btn_save_divline_amlot" id="btn_save_divline_amlot" value="חלוקת עמלות בנק - בין כל הארגונים" class="btn btn-primary mb-2">
+                        <a class="btn btn-green btn-sm" href="{{route('notypeline.show',$bank['id_bank'])}}" role="button">שיוך שורות לסוג תנועה</a>
+                    </div>
+
+
+
+                    <div class="col-auto">
+                        <input type="submit" name="btn_save_divline_amlot" id="btn_save_divline_amlot" value="חלוקת עמלות בנק - בין כל הארגונים" class="btn btn-green btn-sm">
                     </div>
                 </div>
 

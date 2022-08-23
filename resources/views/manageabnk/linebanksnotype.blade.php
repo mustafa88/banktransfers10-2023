@@ -23,98 +23,53 @@
     </div>
 
 
-        <form method="post" action="{{route('linebanks.storeselecttitle',$bank['id_bank'])}}" id="formselct">
+        <form method="post" action="{{route('notypeline.storetypeline',$bank['id_bank'])}}" id="formselct">
         @csrf
 
-    <div class="card card-default">
-        <div class="card-header">עדכון גורף לכל השורות המסומנות</div>
-        <div class="card-body">
-
-            @if (Session::has('successupdateselect'))
-                <div class="row">
-                    <div class="alert alert-success" role="alert"><strong>{{ Session::get('successupdateselect') }}</strong></div>
+            @if (Session::has('success'))
+                <div class="card card-default">
+                    <div class="card-header"></div>
+                    <div class="card-body">
+                            <div class="row">
+                                <div class="alert alert-success" role="alert">
+                                    <strong>{{ Session::get('success') }}</strong>
+                                </div>
+                            </div>
+                    </div>
                 </div>
             @endif
-
-                <div class="form-row align-items-center">
-                    <div class="col-auto">
-                        <label for="id_titletwo">עדכון גורף ל - סוג תנועה</label>
-                        <select class="form-control custom-select custom-select-sm " name="idselect_titletwo" id="idselect_titletwo"  >
-                            <option value="0">בחר</option>
-                            @foreach($title as $item)
-                                <optgroup label="{{$item['tone_text']}}">
-                                    @if(isset($item['title_two']))
-                                        @foreach ($item['title_two'] as $item2 )
-                                            <option value="{{$item2['ttwo_id']}}"> {{$item2['ttwo_text']}}</option>
-                                        @endforeach
-                                    @endif
-                                </optgroup>
-                            @endforeach
-
-                        </select>
-                    </div>
-                    <div class="col-auto">
-                        <input type="submit" name="btn_savetitle" id="btn_savetitle" value="حفظ" class="btn btn-primary mb-2">
-                    </div>
-
-                </div>
-
-        </div>
-    </div>
-
     <div>
 
         <!-- DATATABLE DEMO 1-->
         <div class="card card-default">
             <div class="card-header">
-                <div class="card-title">שורות בנק</div>
+                <div class="card-title">שורות ללא סוג תנועה</div>
 
                 <div class="form-row align-items-center">
+
                     <div class="col-auto">
-                        <label  for="fromdate">מתאריך</label>
-                        <input type="date"  name="fromdate" id="fromdate" value="{{session()->get('showLineBankFromDate')}}" class="form-control" >
-                    </div>
-                    <div class="col-auto">
-                        <label for="todate" >עד תאריך</label>
-                        <input type="date"  name="todate" id="todate" value="{{session()->get('showLineBankToDate')}}" class="form-control" >
-                    </div>
-                    <div class="col-auto">
-                        <label for="showTitleTwo">סוג תנועה</label>
-                        <select class="form-control custom-select custom-select-sm  " name="showTitleTwo" id="showTitleTwo"  >
+                        <label for="showTitleTwo">סוג תנועה להצגה</label>
+                        <select class="form-control custom-select custom-select-sm  " name="showLineBankTitleTwo" id="showLineBankTitleTwo"  >
                             <option value="0">הכל</option>
                             @foreach($title as $item)
                                 <optgroup label="{{$item['tone_text']}}">
                                     @if(isset($item['title_two']))
                                         @foreach ($item['title_two'] as $item2 )
                                             <option value="{{$item2['ttwo_id']}}"
-                                           @if(session()->get('showLineBankTitleTwo')==$item2['ttwo_id']) selected @endif> {{$item2['ttwo_text']}}</option>
+                                           @if(request('showLineBankTitleTwo')==$item2['ttwo_id']) selected @endif> {{$item2['ttwo_text']}}</option>
                                         @endforeach
                                     @endif
                                 </optgroup>
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-auto">
-                        <button class="mb-2 btn btn-success" type="button" id="showbydate">عرض</button>
-                    </div>
+
                 </div>
 
                 <div class="text-sm">
-                    <button class="mb-1 btn btn-outline-primary" type="button" onclick="selectAll()">סמן הכל</button>
-                    <button class="mb-1 btn btn-outline-warning" type="button" onclick="unSelectAll()">בטל סימון</button>
+                    <input type="submit" name="savetype" value="جفظ" class="mb-1 btn btn-success" >
                 </div>
 
-                <div class="row row-flush">
-                    <div class="col-12 col-md-1">
-                        <div class="table-success text-center">שורה תקינה</div>
-                    </div>
-                    <div class="col-12 col-md-1">
-                        <div class="table-warning text-center">שורה לא תקינה</div>
-                    </div>
-                    <div class="col-12 col-md-1">
-                        <div class="table-danger text-center">שורה כפולה</div>
-                    </div>
-                </div>
 
 
 
@@ -130,7 +85,6 @@
                         <th>חובה</th>
                         <th>זכות</th>
                         <th>סוג תנועה</th>
-                        <th>פעולה</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -170,11 +124,8 @@
     <script src="{{ asset('angle/vendor/bootstrap-filestyle/src/bootstrap-filestyle.js') }}"></script><!-- TAGS INPUT-->
     <script src="{{ asset('angle/vendor/sweetalert2/dist/sweetalert2.all.min.js') }}"></script><!-- SWEET ALERT-->
 
-    @include( "scripts.managebank.linebanks" )
+    @include( "scripts.managebank.linebanksnotype" )
 
-    @include('layout.includes.linedetailedit')
-
-    @stack('linedetailedit-script')
 
 @endsection
 
