@@ -8,11 +8,34 @@ use App\Models\bank\Banksline;
 use App\Models\bank\Banksdetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Exports\ReportExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Collection;
 
 class ReportbankController extends Controller
 {
 
-    public function mainPage(Request $requset){
+    public function reportsExport(Request $request)
+    {
+        Log::info('aiser: ReportbankController: reportsExport begin');
+        $id_bank = $request -> bankIdForReportExport;
+        $fromDate = $request -> fromDateForReportExport;
+        $toDate = $request -> toDateForReportExport;
+        $bank_id_converted = (int)$id_bank;
+
+        $r1 = $this->report1($bank_id_converted, $fromDate , $toDate);
+        Log::info('aiser: ReportbankController: reportsExport');
+
+        $headerArray = array(array());
+        foreach ($r1 as $bank) {
+          $value=array($bank['enterprise']['name'],$bank['count_row'],$bank['amountmandatory'],$bank['amountright'],$bank['total_neto']);
+          array_push($headerArray, $value);
+        }
+        return Excel::download(new ReportExport(collect($headerArray)), 'bank_total_report.xlsx');
+    }
+
+    public function mainPage(Request $request){
         //var_dump($requset->fdate);
 
         //if(!empty($requset->fdate)){
@@ -69,13 +92,14 @@ class ReportbankController extends Controller
 
     public function mainPageNew(Request $requset){
         //var_dump($requset->fdate);
-
         //if(!empty($requset->fdate)){
+
         $reports = array();
         if($requset->has('fdate')){
             $id_bank =$requset->bankid;
             $fromDate =$requset->fdate;
             $toDate=$requset->tdate;
+
             /**
             $id_bank =1;
             $fromDate ='2021-01-01';
@@ -132,6 +156,9 @@ class ReportbankController extends Controller
             $reports[] = 'r12_in';
             $r13_in = $this->report13($id_bank ,$fromDate ,$toDate ,'2');
             $reports[] = 'r13_in';
+            $reports[] = 'fromDate';
+            $reports[] = 'id_bank';
+            $reports[] = 'toDate';
 
             //return $r5_in;
         }else{
@@ -161,6 +188,7 @@ class ReportbankController extends Controller
 
 
     function report1($id_bank ,$fromDate ,$toDate){
+        Log::info('in report1 function: bank id: ' .$id_bank .' from: ' . $fromDate . ' to: ' . $toDate);
 
         /**1
         דוחות:

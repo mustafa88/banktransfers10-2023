@@ -77,6 +77,13 @@
                          'tableHead' => array('עמותה','מס שורות','חובה','זכות','נטו')])
                     </div>
                 </div>
+                <form id="logout-form" action="{{ route('reports.export') }}" method="POST">
+                    @csrf
+                    <input name="bankIdForReportExport" type="hidden" id="bankIdForReportExport" value="{{$id_bank}}" >
+                    <input name="fromDateForReportExport" type="hidden" id="fromDateForReportExport" value="{{$fromDate}}" >
+                    <input name="toDateForReportExport" type="hidden" id="toDateForReportExport" value="{{$toDate}}" >
+                    <div class="col-auto"><button class="btn btn-primary mb-2" type="submit">Export</button></div>
+              </form>
             </div>
         </div>
     @endif

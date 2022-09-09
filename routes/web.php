@@ -238,5 +238,5 @@ Route::group(['prefix' => 'reports/reportbank', 'namespace' => 'Bank', 'middlewa
 
     Route::get('searchProj', [ReportProjectController::class ,'mainPageProj'])->name('reports.projsearch');
 
-
 });
+Route::post('reports/export/', [ReportbankController::class, 'reportsExport'])->name('reports.export');
