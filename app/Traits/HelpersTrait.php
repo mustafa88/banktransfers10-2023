@@ -23,8 +23,12 @@ trait HelpersTrait
             if($pos1===false or $pos2===false){
                 break;
             }
-            $rowHtmlArr[] = substr($rowHtml,$pos1+4,$pos2-5);
-            $rowHtml =  substr($rowHtml,$pos2+5);
+            $val = substr($rowHtml,$pos1+4,$pos2-4);
+            if(substr($val,-1)=='<'){
+                $val = substr($val,0,-1);
+            }
+            $rowHtmlArr[]=$val;
+            $rowHtml =  substr($rowHtml,$pos2+6);
         }
         return $rowHtmlArr;
     }

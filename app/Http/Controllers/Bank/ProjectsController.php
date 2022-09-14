@@ -28,10 +28,10 @@ class ProjectsController extends Controller
                     $query->where('inactive', '=', 0);
                 },
                 'expense' => function ($query) {
-                    $query->where('inactive', '=', 0);
+                    $query->where('inactive', '=', 0)->orderBy('name');
                 },
                 'income' => function ($query) {
-                    $query->where('inactive', '=', 0);
+                    $query->where('inactive', '=', 0)->orderBy('name');
                 },
                 'campaigns' => function ($query) {
                     $query->where('inactive', '=', 0);

@@ -1,6 +1,10 @@
 
     <script type="text/javascript">
+
+
         let myTable,myRowTable=null;
+
+
         $(document).ready(function(){
             myTable = $('#datatable1').DataTable({
                 'paging': true, // Table pagination
@@ -18,6 +22,31 @@
         });
 
 
+        $('#id_typedont').on( 'change', function () {
+            //שינוי סוג תרומה - משנה מחיר יחידה
+            let price =  $('#id_typedont').find(":selected").data('price');
+            $("#price").val(price);
+            culcAmountLine();
+        });
+
+        $('#price').on( 'change', function () {
+            //שינוי מחיר יחידה
+            culcAmountLine();
+        });
+
+        $('#quantity').on( 'change', function () {
+            //שינוי כמות
+            culcAmountLine();
+        });
+
+        $('#amount').on( 'change', function () {
+            if($('#quantity').val()==0){
+                return;
+            }
+             let price = $('#amount').val()/$('#quantity').val();
+            price = parseFloat(price).toFixed(2);
+            $("#price").val(price);
+        });
         /**
          * שמירה
          * save new data or update data exists
@@ -34,7 +63,10 @@
             //alert(id_line);
             if(id_line=='0'){
                 //insert
-                let url= '{{route('mainDonate.storeajax')}}';
+                let url= '{{route('mainDonate.storeajax',$param_url)}}';
+                //console.log(url);
+
+                //return url;
                 let resultAjax = SendToAjax(url,'POST');
                 //console.log(resultAjax);
                 if(resultAjax==undefined){
@@ -50,10 +82,11 @@
                 //return;
                 //update
                 //notify('update');
-                let url= '{{route('mainDonate.updateajax')}}';
+                let url= '{{route('mainDonate.updateajax',$param_url)}}';
+
                 url +="/"+id_line;
                 let resultAjax = SendToAjax(url,'PUT');
-                console.log(resultAjax);
+                //console.log(resultAjax);
                 //return;
                 if(resultAjax==undefined){
                     notify('حدث خطأ','error');
@@ -63,7 +96,6 @@
                 if(resultAjax.status===false){
                     return;
                 }
-
 
                 let numberRow = myTable.row(myRowTable)[0][0];
                 let row = myTable.row(numberRow);
@@ -89,10 +121,12 @@
             var nRow = $(this).parents('tr')[0];
             var aData = myTable.row(nRow).data();
 
-            let url='{{route('mainDonate.editajax')}}';
+            let url='{{route('mainDonate.editajax',$param_url)}}';
             url +="/"+idline;
+            //alert(url);
 
             let resultAjax = SendToAjax(url,'GET');
+            //console.log(resultAjax);
 
             if(resultAjax.status===false){
                 notify(resultAjax.msg ,resultAjax.cls);
@@ -103,9 +137,9 @@
 
 
             $("#datedont").val(row.datedont);
-            $("#enterp").val(row.id_enter + "*" + row.id_proj);
-            $("#id_city").val(row.id_city);
             $("#id_typedont").val(row.id_typedont);
+            $("#price").val(row.price);
+            $("#quantity").val(row.quantity);
             $("#amount").val(row.amount);
             $("#description").val(row.description);
             $("#namedont").val(row.namedont);
@@ -133,7 +167,7 @@
             var aData = myTable.row(nRow).data();
             let idline = $(this).data('idline');
             $("#id_line").val(idline);
-            let url= '{{route('mainDonate.deleteajax')}}';
+            let url= '{{route('mainDonate.deleteajax',$param_url)}}';
             url +="/"+idline;
             let resultAjax = SendToAjax(url,'DELETE');
             //console.log(resultAjax);
@@ -152,14 +186,14 @@
         $(document).on('click', '#showbydate', function (e) {
             var fdate= $("#fromdate").val();
             var tdate= $("#todate").val();
-            var showTitleTwo= $("#showTitleTwo").val();
-            let url='{{ route('mainDonate.show') }}';
+            let url='{{route('mainDonate.show' ,$param_url)}}';
 
             if(fdate=="" || tdate==""){
                 notify("תאריך לא תקין" ,"error");
                 return false;
             }
             //url += "/" + fdate + "/" + tdate;
+            url += "?fromDate=" + fdate + "&toDate=" + tdate;
             //alert(url);
             window.location = url;
         });
@@ -173,87 +207,24 @@
             $("#enterp").val('0');
             $("#id_city").val('0');
             $("#id_typedont").val('0');
+            $("#price").val('');
+            $("#quantity").val('');
             $("#amount").val('');
             $("#description").val('');
             $("#namedont").val('');
 
         }
 
-
-        function selectAll(){
-            $("input[name='selectbox[]']").prop("checked", true);
+        /**
+         * חישוב סכום שורה
+         */
+        function culcAmountLine(){
+            let price= $("#price").val();
+            let quantity= $("#quantity").val();
+            let amount = price * quantity;
+            $("#amount").val(amount);
         }
 
-        function unSelectAll(){
-            $("input[name='selectbox[]']").prop("checked", false);
-        }
-
-        function divlineditels(){
-            var selectbox = $("input[name='selectbox[]']:checked");
-            //alert(selectbox.length)
-            let firsdata = $(selectbox [0]).data('titletwo');
-            let idline = $(selectbox [0]).val();
-            if(firsdata==0){
-                Swal.fire('נא לבחור שורות מהטבלה', '', 'info')
-                return false;
-            }
-            for (let i=0;i<selectbox.length;i++){
-                if($(selectbox [i]).data('titletwo')!=firsdata){
-                    Swal.fire('נא לבחור שורות מאותו סוג תנועה');
-                    return false;
-                }
-            }
-            dataObj = {};
-            dataObj['idline']= $("#statos").val();
-
-            //let url= ' route('linebanks.showrowdetils',$bank['id_bank']) ';
-            url +="/"+idline;
-            //alert(url);
-            let resultAjax = SendToAjax(url,'GET','-1');
-            if(resultAjax==undefined){
-                notify('حدث خطأ','error');
-                return false;
-            }
-
-            Swal.fire({
-                title: '<strong>חלוקת שורה</strong>',
-                //icon: 'info',
-                html: resultAjax['html'],
-                width: 1000,
-                showDenyButton: true,
-                //showCancelButton: true,
-                confirmButtonText: 'حفظ',
-                denyButtonText: `الغاء`,
-            }).then((result) => {
-                /* Read more about isConfirmed, isDenied below */
-                if (result.isConfirmed) {
-                    var dataObj = {};
-                    document.querySelectorAll('.inptrowdetl').forEach(function(el){
-                        dataObj[el.id]= el.value;
-                    });
-                    dataObj['scome']='1';
-                    //console.log(dataObj);
-                    var counterSave=0;
-                    for (let i=0;i<selectbox.length;i++) {
-                        var idline_aj = $(selectbox[i]).val();
-                        //let url= ' route('linedetail.storemultirowajax',$bank['id_bank'])  ';
-                        url +="/"+idline_aj;
-                        let resultAjax = SendToAjax(url,'POST',null,dataObj);
-                        //console.log(resultAjax);
-                        if(resultAjax!=undefined && resultAjax['status']!=undefined && resultAjax['status']==true){
-                            counterSave++;
-                            $(selectbox[i]).prop("checked", false);
-                        }
-                    }
-
-                    Swal.fire(" נמשרו " + counterSave + " שורות מתוך " + selectbox.length + " שורות "  )
-                } else if (result.isDenied) {
-                    Swal.fire('שינוי לא בוצע', '', 'info')
-                }
-            })
-
-
-        }
     </script>
 
 

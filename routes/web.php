@@ -16,6 +16,7 @@ use App\Http\Controllers\bank\ReportbankController;
 use App\Http\Controllers\Bank\CampaignsController;
 use App\Http\Controllers\Bank\ReportProjectController;
 use App\Http\Controllers\Bank\DonateworthController;
+use App\Http\Controllers\Bank\DonateTypeController;
     /*middleware
     |--------------------------------------------------------------------------
     | Web Routes
@@ -77,6 +78,16 @@ Route::group(['prefix' => 'managetable/city', 'namespace' => 'Bank', 'middleware
     //managetable/enterprise/show
     Route::get('show', [CityController::class ,'showTable'])->name('table.city.show');
     Route::post('store', [CityController::class, 'store'])->name('table.city.store');
+});
+
+Route::group(['prefix' => 'managetable/donatetype', 'namespace' => 'Bank', 'middleware' => ['web']], function () {
+    //סוג תרומה בשווה
+    Route::get('donateType', [DonateTypeController::class,'donateType'])->name('donateType.show');
+
+    Route::post('store', [DonateTypeController::class,'store'])->name('donateType.store');
+    //עדכון מחיר
+    Route::put('store/{id_donatetype?}', [DonateTypeController::class, 'updatePriceAjax'])->name('donateType.updatepriceajax');
+
 });
 
 /**
@@ -160,12 +171,26 @@ Route::group(['prefix' => 'managebanks/listbanks', 'namespace' => 'Bank', 'middl
 Route::group(['prefix' => 'managebanks/csvbanks', 'namespace' => 'Bank', 'middleware' => ['web']], function () {
     //מסך ראשי להעלאה קובץ CSV לבנק
     Route::get('storecsv', [BanksController::class, 'mainLoadCsv'])->name('banks.mainLoadCsv');
-
     //העלאת קובץ CSV
     Route::post('storecsv', [BanksController::class, 'storeFileCsv'])->name('banks.storeFileCsv');
 });
-
+/**
 Route::group(['prefix' => 'donate', 'namespace' => 'Bank', 'middleware' => ['web']], function () {
+    //מסך ראשי - תרומה בשווה
+    Route::get('maindonate', [DonateworthController::class,'mainDonateOLD'])->name('mainDonate.show');
+    //INSERT
+    Route::post('store', [DonateworthController::class, 'storeAjax'])->name('mainDonate.storeajax');
+    //EDIT
+    Route::get('store/{id_donate?}', [DonateworthController::class, 'editAjax'])->name('mainDonate.editajax');
+    //UPDATE
+    Route::put('store/{id_donate?}', [DonateworthController::class, 'updateAjax'])->name('mainDonate.updateajax');
+    //DELETE
+    Route::delete('delete/{id_donate?}', [DonateworthController::class, 'deleteAjax'])->name('mainDonate.deleteajax');
+
+});
+**/
+Route::group(['prefix' => 'donate/{id_entrep}/{id_proj}/{id_city}', 'namespace' => 'Bank', 'middleware' => ['web']], function () {
+    //תרומב בשווה - כניסה לעמות + פרויקט
     //מסך ראשי - תרומה בשווה
     Route::get('maindonate', [DonateworthController::class,'mainDonate'])->name('mainDonate.show');
     //INSERT
@@ -177,6 +202,16 @@ Route::group(['prefix' => 'donate', 'namespace' => 'Bank', 'middleware' => ['web
     //DELETE
     Route::delete('delete/{id_donate?}', [DonateworthController::class, 'deleteAjax'])->name('mainDonate.deleteajax');
 
+});
+
+Route::group(['prefix' => 'donate/export_import', 'namespace' => 'Bank', 'middleware' => ['web']], function () {
+    //יבוא ויצאי קבצי תרומב בשווי
+
+    Route::get('maindonate', [DonateworthController::class,'mainDonateExportImport'])->name('mainDonate.exportimport');
+    //הודת קובץ תרומה בשווה
+    Route::post('exportfile', [DonateworthController::class,'mainDonateExport'])->name('mainDonate.export');
+    //העלאת קובץ CSV
+    Route::post('importfile', [DonateworthController::class, 'mainDonateImport'])->name('mainDonate.import');
 });
 
 
@@ -209,7 +244,7 @@ Route::group(['prefix' => 'managebanks/linebanks', 'namespace' => 'Bank', 'middl
 
 
 Route::group(['prefix' => 'managebanks/help_chosse_type_line/{id_bank}', 'namespace' => 'Bank', 'middleware' => ['web']], function () {
-
+    //עזרה בשיוך סוג שורת בנק
     Route::get('show', [BankslineController::class ,'showTableNoTypeLine'])->name('notypeline.show');
 
     Route::post('story', [BankslineController::class ,'storeTypeLine'])->name('notypeline.storetypeline');

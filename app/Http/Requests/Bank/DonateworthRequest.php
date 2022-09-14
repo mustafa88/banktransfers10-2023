@@ -33,19 +33,26 @@ class DonateworthRequest extends FormRequest
                 break;
             case 'PUT'://Update/Replace
                 $arrRules = [
+                    //'id_bank' => 'in:0',
+                    'datedont' => 'required|date_format:Y-m-d',
+                    //'id_enter' => 'required|numeric|min:1',
+                    //'id_proj' => 'required||not_in:0',
+                    //'enterp' => 'required|not_in:0',
+                    //'id_city' => 'required|numeric|min:1',
+                    'id_typedont' => 'required|numeric|min:1',
+                    'amount' => 'required|numeric',
+                    'price' => 'required|numeric',
+                    'quantity' => 'required|numeric',
                 ];
                 break;
             case 'POST'://Create
 
                 $arrRules = [
-                    //'id_bank' => 'in:0',
                     'datedont' => 'required|date_format:Y-m-d',
-                    //'id_enter' => 'required|numeric|min:1',
-                    //'id_proj' => 'required||not_in:0',
-                    'enterp' => 'required|not_in:0',
-                    'id_city' => 'required|numeric|min:1',
                     'id_typedont' => 'required|numeric|min:1',
                     'amount' => 'required|numeric',
+                    'price' => 'required|numeric',
+                    'quantity' => 'required|numeric',
                 ];
                 //$arrRules = [];
                 break;

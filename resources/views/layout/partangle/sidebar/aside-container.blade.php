@@ -32,6 +32,7 @@
                         <li class=" "><a href="{{route('table.enterprise.show')}}" title="מבנה עמונה"><span>جدول الجمعيات</span></a></li>
                         <li class=" "><a href="{{route('table.city.show')}}" title="جدول البلدان"><span>جدول البلدان</span></a></li>
                         <li class=" "><a href="{{route('table.expense_income.show')}}" title="جدول مصروفات ومدخولات"><span>جدول مصروفات ومدخولات</span></a></li>
+                        <li class=" "><a href="{{route('donateType.show')}}" title="جدول التبرعات العينية"><span>جدول التبرعات العينية</span></a></li>
                         {{--
                         <li class=" "><a href="{{route('table.connect_projects_city.show')}}" title="ربط المشاريع بالبلد"><span>ربط المشاريع بالبلد</span></a></li>
                         <li class=" "><a href="{{route('table.income.show')}}" title="قائمة المدخولات"><span>قائمة المدخولات</span></a></li>
@@ -48,17 +49,55 @@
                         <li class=" "><a href="{{route('reports.banksearch')}}" title="تقارير بنكية"><span>تقارير بنكية</span></a></li>
                         <li class=" "><a href="{{route('reports.banksearch.new')}}" title="تقارير بنكية"><span>تقارير بنكية2</span></a></li>
                         <li class=" "><a href="{{route('reports.projsearch')}}" title="تقارير مشاريع"><span>تقارير مشاريع</span></a></li>
+                        <li class=" "><a href="#" title="تقارير تبرعات عينية"><span>تقارير تبرعات عينية</span></a></li>
                     </ul>
                 </li>
 
+                <li class=" "><a href="#li_donate" title="Tables" data-toggle="collapse"><em class="icon-grid"></em><span >תרומה בשווה</span></a>
+
+                <ul class="sidebar-nav sidebar-subnav collapse" id="li_donate">
+
+                    <li class=" "><a href="{{route('mainDonate.exportimport')}}" title="יבוא-יצוא קובץ"><span>יבוא-יצוא קובץ</span></a></li>
+                        <li class="sidebar-subnav-header">תרומה בשווה</li>
+
+                        @foreach($share_enterprise as $key1 => $item)
+                        <li class=" "><a href="#ul_donate_{{$key1}}" title="{{$item['name']}}" data-toggle="collapse"><em class="fas fa-angle-left"></em><span>{{$item['name']}}</span></a>
+                            <ul class="sidebar-nav sidebar-subnav collapse" id="ul_donate_{{$key1}}">
+                                <li class="sidebar-subnav-header">{{$item['name']}}</li>
+
+                                @foreach($item['project'] as $key2 => $item2)
+                                <li class=" "><a href="#ul_donate_{{$key1}}_{{$key2}}" title="{{$item2['name']}}" data-toggle="collapse"><em class="fas fa-angle-left"></em><span>{{$item2['name']}}</span></a>
+                                    <ul class="sidebar-nav sidebar-subnav collapse" id="ul_donate_{{$key1}}_{{$key2}}">
+                                        <li class="sidebar-subnav-header">{{$item2['name']}}</li>
+
+                                        @foreach($item2['city'] as $key3 => $item3)
+
+                                            <li class=" ">
+                                                <a href="{{route('mainDonate.show',
+                                                 ['id_entrep'=>$item['id'],'id_proj'=>$item2['id'],'id_city'=>$item3['city_id']])}}" title="{{$item3['city_name']}}">
+                                                <span>{{$item3['city_name']}}</span>
+                                                </a>
+                                            </li>
+                                        @endforeach
+
+                                    </ul>
+                                </li>
+                                @endforeach
+
+                            </ul>
+                        </li>
+                        @endforeach
+                    </ul>
+                </li>
 
                 <li class=" "><a href="#banks" title="Tables" data-toggle="collapse"><em class="icon-grid"></em><span >בנקים</span></a>
                     <ul class="sidebar-nav sidebar-subnav collapse" id="banks">
                         <li class="sidebar-subnav-header">בנקים</li>
                         <li class=" "><a href="{{route('banks.show')}}" title="قائمة البنوك"><span>قائمة البنوك</span></a></li>
 
+                        {{--
                         <li class=" "><a href="{{route('mainDonate.show')}}" title="תרומה בשווה"><span>תרומה בשווה</span></a></li>
-
+                        --}}
 
                         <li class=" "><a href="{{route('banks.mainLoadCsv')}}" title="העלאת קובץ אקסל"><span>העלאת קובץ אקסל</span></a></li>
 

@@ -41,26 +41,41 @@
                         <input class="form-control mb-2" name="datedont" id="datedont" type="date" >
                     </div>
 
+                    <div class="col-auto">
+                        <label for="enterp">مؤسسة / مشروع</label>
+                        <select name="enterp" id="enterp" class="custom-select custom-select-sm">
+                            <option value="0">اختر قيمة</option>
+                            @foreach($enterprise as $key1 => $item)
+                                <optgroup label="{{$key1+1}}) {{$item['name']}}">
+                                    @foreach($item['project'] as $key2 => $item2)
+                                        <option value="{{$item['id']}}*{{$item2['id']}}"
+                                                @if(request()->enterp ==($item['id']."*".$item2['id']) )selected @endif>*{{$item2['name']}}</option>
+                                    @endforeach
+                                </optgroup>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="col-auto">
+                        <label for="id_city">البلد</label>
+                        <select name="id_city" id="id_city" class="custom-select custom-select-sm">
+                            <option value="0">اختر قيمة</option>
+                            @foreach($city as $key1 => $item)
+                                <option value="{{$item['city_id']}}">{{$item['city_name']}}</option>
+                            @endforeach
+                        </select>
+                    </div>
 
                     <div class="col-auto">
                         <label for="id_typedont">نوع التبرع</label>
                         <select name="id_typedont" id="id_typedont" class="custom-select custom-select-sm">
                             <option value="0">اختر قيمة</option>
                             @foreach($donatetype as $key1 => $item)
-                                <option value="{{$item['id']}}" data-price="{{$item['price']}}">{{$item['name']}}</option>
+                                <option value="{{$item['id']}}">{{$item['name']}}</option>
                             @endforeach
                         </select>
                     </div>
 
-                    <div class="col-auto">
-                        <label for="amount">سعر الوحده</label>
-                        <input class="form-control mb-2" name='price' id="price" type="number" >
-                    </div>
-
-                    <div class="col-auto">
-                        <label for="amount">الكمية</label>
-                        <input class="form-control mb-2" name='quantity' id="quantity" type="number" >
-                    </div>
 
                     <div class="col-auto">
                         <label for="amount">قيمة التبرع</label>
@@ -132,16 +147,13 @@
                     <thead>
                     <tr>
                         <th>תאריך תרומה</th>
-                        {{--<th>ארגון</th>
+                        <th>ארגון</th>
                         <th>פרויקט</th>
-                        <th>עיר</th>--}}
+                        <th>עיר</th>
                         <th>סוג תרומה</th>
-                        <th>מחיר</th>
-                        <th>כמות</th>
                         <th>שווה תרומה</th>
                         <th>תיאור</th>
-                        <th>שם תורם</th>
-                        {{--<th>ת עדכון</th>--}}
+                        <th>שם תורם	</th>
                         <th>פעולה</th>
                     </tr>
                     </thead>
@@ -182,13 +194,13 @@
     <script src="{{ asset('angle/vendor/bootstrap-filestyle/src/bootstrap-filestyle.js') }}"></script><!-- TAGS INPUT-->
     <script src="{{ asset('angle/vendor/sweetalert2/dist/sweetalert2.all.min.js') }}"></script><!-- SWEET ALERT-->
 
-        @include( "scripts.managebank.donate" )
+    @include( "scripts.managebank.donateOLD" )
 
-        {{--
-        @include('layout.includes.linedetailedit')
+    {{--
+    @include('layout.includes.linedetailedit')
 
-        @stack('linedetailedit-script')
-        --}}
+    @stack('linedetailedit-script')
+    --}}
 @endsection
 
 

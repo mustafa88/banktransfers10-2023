@@ -78,11 +78,11 @@ function SendToAjax(url ,type ,formName ,dataObj){
             //alert(data.status);
         },
         error: function (xhr, ajaxOptions, thrownError) {
-            //console.log(JSON.parse(xhr.responseText));
+             console.log(JSON.parse(xhr.responseText));
             let responseText = JSON.parse(xhr.responseText);
             let message = responseText["message"];
             let errors = responseText["errors"];
-            //console.log(responseText);
+             console.log(responseText);
             notify(message,'error');
             $.each( errors, function( key, value ) {
                 notify( value ,'error');

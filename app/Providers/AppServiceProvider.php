@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\bank\Banks;
+use App\Models\bank\Enterprise;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 
@@ -28,8 +29,15 @@ class AppServiceProvider extends ServiceProvider
         //
 
         $share_listbanks = Banks::with(['enterprise','projects'])->get();
-        //echo $share_listbanks;
+
+        $share_enterprise = Enterprise::with([
+            'project.city' => function ($query) {
+            $query->where('inactive', '=', 0);
+        },])->get();
+
+
         View::share('share_listbank', $share_listbanks);
+        View::share('share_enterprise', $share_enterprise);
 
     }
 }

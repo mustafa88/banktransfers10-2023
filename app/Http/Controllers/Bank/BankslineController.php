@@ -66,7 +66,6 @@ class BankslineController extends Controller
         //return $bank;
         $enterprise = Enterprise::get();
         $title = Title_one::with(['titleTwo'])->get()->toArray();
-
         return view('manageabnk.linebanks', compact('banksline', 'bank', 'enterprise', 'title'))
             ->with(
                 [
@@ -94,15 +93,37 @@ class BankslineController extends Controller
 
         $banksline_a = array();
         for($i=0;$i<count($banksline);$i++){
+            $description = $banksline[$i]['description'];
+            $posstr = strpos($description,"תאריך ערך");
+
+
             $resChk = \DB::table('Banksline')
                 ->select('id_titletwo', \DB::raw('count(*) as total_idtwo'))
                 ->where('id_bank', '=', $id_bank)
-                ->where('description', '=', $banksline[$i]['description'])
+                ->where('description', '=', $description)
                 ->whereNotNull('id_titletwo')
                 ->groupBy('id_titletwo')
                 ->orderBy(\DB::raw('count(*)'),'desc')
                 ->get();
+
             $resChk = json_decode($resChk, true);
+
+            if(!isset($resChk[0]['total_idtwo'])  and $posstr!==false){
+                //ddd($resChk);
+                $description = substr($description,0,$posstr-1);
+
+                $resChk = \DB::table('Banksline')
+                    ->select('id_titletwo', \DB::raw('count(*) as total_idtwo'))
+                    ->where('id_bank', '=', $id_bank)
+                    ->where('description', 'LIKE', '%'.$description.'%')
+                    ->whereNotNull('id_titletwo')
+                    ->groupBy('id_titletwo')
+                    ->orderBy(\DB::raw('count(*)'),'desc')
+                    ->get();
+                $resChk = json_decode($resChk, true);
+            }
+
+
 
             $ofer_title_two = 0;
             if(isset($resChk[0]['total_idtwo']) and $resChk[0]['total_idtwo']>1){
@@ -210,6 +231,8 @@ class BankslineController extends Controller
             $resultArr['msg'] = 'תקלה - שורה לא קיימת';
             return response()->json($resultArr);
         }
+        $old_id_titletwo = $daterow->id_titletwo;
+        $old_id_enter = $daterow->id_enter;
 
         $done = 0;
 
@@ -233,8 +256,14 @@ class BankslineController extends Controller
 
         $daterow->save();
 
-        $rowBanksLine = Banksline::where('id_bank', '=', $id_bank)->find($id_line);
+        if($old_id_titletwo!=$requset->id_titletwo or $old_id_enter!=$requset->id_enter){
+            //אם השתנה סוג תנועה או עמותה מוחקים פירוט השורה במידה וקיים
+            Banksdetail::where('id_line', '=', $id_line)->delete();
+        }
 
+        $rowBanksLine = Banksline::where('id_bank', '=', $id_bank)->find($id_line);
+        //חלוקת שורה בין כל הארגונים במידה והיא מסוג עמלת בנק
+        $this->storeDivDetail($id_line);
         $this->checkIfDuplicateLine($rowBanksLine);
         $this->checkFixLine($id_line);
 
@@ -363,7 +392,7 @@ class BankslineController extends Controller
 
         if($bankslin['id_titletwo']=='2' ){
             //הוצאה מסוג תשלום לספק חייב  שיבחר שם ספק מרשימה לא ניתן שיהיה ריק
-            ddd('error id_titletwo!=2');
+            //ddd('error id_titletwo!=2');
         }
 
         if($bankslin['id_titletwo']!='1' ){
@@ -406,13 +435,14 @@ class BankslineController extends Controller
         }
 
 
-        $banksdetail = Banksdetail::where('id_line', '=', $id_line)->get();
+        //$banksdetail = Banksdetail::where('id_line', '=', $id_line)->get();
         //return $banksdetail;
-        if($banksdetail){
+        //if($banksdetail){
             //מחיקת כל השורות במידה וקקים
             //$banksdetail->delete();
-            \DB::table('Banksdetail')->where('id_line', '=', $id_line)->delete();
-        }
+            //\DB::table('Banksdetail')->where('id_line', '=', $id_line)->delete();
+            Banksdetail::where('id_line', '=', $id_line)->delete();
+        //}
 
         $arrDate = [
             'id_line' => $id_line,

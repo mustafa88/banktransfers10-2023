@@ -2,6 +2,7 @@
 
 namespace App\Models\Bank;
 
+use App\Models\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\bank\Enterprise;
@@ -10,11 +11,13 @@ use App\Models\bank\City;
 use App\Models\Bank\Donatetype;
 class Donateworth extends Model
 {
-    use HasFactory;
+    use HasFactory ,HasUuid;
     protected  $table = 'Donateworth';
-    protected $fillable = ['id_donate','datedont','id_enter','id_proj','id_city','id_typedont','amount','description','namedont','created_at','updated_at'];
+    protected $fillable = ['uuid_donate','datedont','id_enter','id_proj','id_city','id_typedont','price','quantity','amount','description','namedont','created_at','updated_at'];
     protected $hidden = [];
-    protected $primaryKey = 'id_donate';
+    protected $primaryKey = 'uuid_donate';
+    //protected $keyType = 'string';
+    //public $incrementing = false;
     public $timestamps = true;
 
     public function enterprise(){

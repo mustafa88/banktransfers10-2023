@@ -89,7 +89,6 @@ class BanksController extends Controller
     public function  storeFileCsv(Request $requset)
     {
 
-
         //https://medium.com/technology-hits/how-to-import-a-csv-excel-file-in-laravel-d50f93b98aa4
 
         if($requset->enterp=='0'){
@@ -108,7 +107,7 @@ class BanksController extends Controller
         }
         $enterp =$requset->enterp;
 
-        ddd($requset);
+        //ddd($requset);
         //return redirect()->back()->with("success", "تم الحفظ بنجاح  سطر جديد");
        // return redirect()->back()->withErrors(['msg' => 'The Message']);
         //return redirect()->back()->with("success", "aaaa");
@@ -192,37 +191,51 @@ class BanksController extends Controller
             $counter++;
         }
 
-        foreach ($dataFile as $v_dataFile){
+        try {
+            \DB::beginTransaction(); // Tell Laravel all the code beneath this is a transaction
+            foreach ($dataFile as $v_dataFile){
 
-            $datemovement = $v_dataFile['datemovement'];
-            $description = $v_dataFile['description'];
-            $asmcta = $v_dataFile['asmcta'];
-            $amountmandatory = $v_dataFile['amountmandatory'];
-            $amountright = $v_dataFile['amountright'];
+                $datemovement = $v_dataFile['datemovement'];
+                $description = $v_dataFile['description'];
+                $asmcta = $v_dataFile['asmcta'];
+                $amountmandatory = $v_dataFile['amountmandatory'];
+                $amountright = $v_dataFile['amountright'];
 
 
-            //$duplicate = 0;
-            $uploadcsv_at = date('Y-m-d');
-            $arrDate = [
-                'id_bank' => $id_bank,
-                'datemovement' => $datemovement,//תארך תנועה
-                'datevalue' => $datemovement,//תאריך ערך
-                'description' => $description,
-                'asmcta' => $asmcta,
-                'amountmandatory' => $amountmandatory,
-                'amountright' => $amountright,
-                'id_enter' => $enterp,
-                'duplicate' => 0,
-                'nobank' => 0,
-                'done' => 0,
-                'uploadcsv_at' => $uploadcsv_at,
-            ];
-            $rowinsert = Banksline::create($arrDate);
+                //$duplicate = 0;
+                $uploadcsv_at = date('Y-m-d');
+                $arrDate = [
+                    'id_bank' => $id_bank,
+                    'datemovement' => $datemovement,//תארך תנועה
+                    'datevalue' => $datemovement,//תאריך ערך
+                    'description' => $description,
+                    'asmcta' => $asmcta,
+                    'amountmandatory' => $amountmandatory,
+                    'amountright' => $amountright,
+                    'id_enter' => $enterp,
+                    'duplicate' => 0,
+                    'nobank' => 0,
+                    'done' => 0,
+                    'uploadcsv_at' => $uploadcsv_at,
+                ];
+                $rowinsert = Banksline::create($arrDate);
 
-            $this->checkIfDuplicateLine($rowinsert);
+                $this->checkIfDuplicateLine($rowinsert);
+            }
+
+
+            \DB::commit(); // Tell Laravel this transacion's all good and it can persist to DB
+
+            return redirect()->back()->with("success", "تم الحفظ بنجاح {$counter} سطر جديد");
+        }catch(\Exception $exp) {
+
+            \DB::rollBack(); // Tell Laravel, "It's not you, it's me. Please don't persist to DB"
+            return redirect()->back()->withErrors(['msg' => "حدث خطا اثناء الحفظ - لم يتم حفظ اي معلومه من الملف <BR> " . $exp->getMessage()]);
         }
 
-        return redirect()->back()->with("success", "تم الحفظ بنجاح {$counter} سطر جديد");
+
+
+
 
     }
     public function checkUploadedFileProperties($extension, $fileSize)
