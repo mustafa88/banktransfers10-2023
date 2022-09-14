@@ -9,10 +9,10 @@ class Donatetype extends Model
 {
     use HasFactory;
     protected  $table = 'Donatetype';
-    protected $fillable = ['id','name'];
+    protected $fillable = ['id','name','price'];
     protected $hidden = [];
     protected $primaryKey = 'id';
-    public $timestamps = true;
+    public $timestamps = false;
 
 
     public function donateworth(){
