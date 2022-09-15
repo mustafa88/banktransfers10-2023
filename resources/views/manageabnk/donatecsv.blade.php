@@ -42,7 +42,7 @@
             @csrf
 
             <div class="card card-default">
-            <div class="card-header">יבוא קובץ - צרף קובץ</div>
+            <div class="card-header">יבוא קובץ תרומות - צרף קובץ</div>
             <div class="card-body">
                     <div class="form-row align-items-center">
                         <div class="col-auto">
@@ -58,6 +58,31 @@
                     </div>
             </div>
         </div>
+        </form>
+    </div>
+
+
+    <div class="col-6">
+        <form method="post" enctype="multipart/form-data" action="{{route('donateType.import')}}" >
+            @csrf
+
+            <div class="card card-default">
+                <div class="card-header">יבוא קובץ סוגי תרומה - צרף קובץ</div>
+                <div class="card-body">
+                    <div class="form-row align-items-center">
+                        <div class="col-auto">
+                            <label >בחר קובץ</label>
+                            <input type="file" name="filecsv" id="filecsv" accept=".dat"
+                                   class="form-control filestyle" data-classbutton="btn btn-secondary"
+                                   data-classinput="form-control inline"
+                                   data-icon="&lt;span class='fa fa-upload mr-2'&gt;&lt;/span&gt;">
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-primary mb-2" type="submit" name="btn_savecsv" >حفظ</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </form>
     </div>
 

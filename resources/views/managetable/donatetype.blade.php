@@ -20,6 +20,22 @@
         {!! implode('', $errors->all('<div>:message</div>')) !!}
     @endif
 
+    <div class="col-6">
+        <form method="post"  enctype="multipart/form-data" action="{{route('donateType.export')}}"  >
+            @csrf
+
+            <div class="card card-default">
+                <div class="card-header">יצוא קובץ - הורד קובץ</div>
+                <div class="card-body">
+                    <div class="form-row align-items-center">
+                        <div class="col-auto">
+                            <button class="btn btn-primary mb-2" type="submit" name="btn_savecsv" >تنزيل ملف - انواع التبرع</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
     <div class="card card-default col-6 ">
         <div class="card-header">
             <div class="card-title">اضافة نوع جديد</div>

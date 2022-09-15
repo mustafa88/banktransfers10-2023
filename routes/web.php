@@ -83,11 +83,16 @@ Route::group(['prefix' => 'managetable/city', 'namespace' => 'Bank', 'middleware
 Route::group(['prefix' => 'managetable/donatetype', 'namespace' => 'Bank', 'middleware' => ['web']], function () {
     //סוג תרומה בשווה
     Route::get('donateType', [DonateTypeController::class,'donateType'])->name('donateType.show');
-
+    //הוספת סוג חדש
     Route::post('store', [DonateTypeController::class,'store'])->name('donateType.store');
     //עדכון מחיר
     Route::put('store/{id_donatetype?}', [DonateTypeController::class, 'updatePriceAjax'])->name('donateType.updatepriceajax');
 
+    //הודת קובץ סוגי תרומה
+    Route::post('exportfile', [DonateTypeController::class,'DonateTypeExport'])->name('donateType.export');
+
+    //יבוא קובץ סוג תרומה לעדכון
+    Route::post('importfile', [DonateTypeController::class, 'DonateTypeImport'])->name('donateType.import');
 });
 
 /**

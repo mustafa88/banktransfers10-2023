@@ -56,8 +56,7 @@
                 <li class=" "><a href="#li_donate" title="Tables" data-toggle="collapse"><em class="icon-grid"></em><span >תרומה בשווה</span></a>
 
                 <ul class="sidebar-nav sidebar-subnav collapse" id="li_donate">
-
-                    <li class=" "><a href="{{route('mainDonate.exportimport')}}" title="יבוא-יצוא קובץ"><span>יבוא-יצוא קובץ</span></a></li>
+                    <li class=" "><a href="{{route('mainDonate.exportimport')}}" title="יבוא-יצוא קובץ תרומה"><span>יבוא-יצוא קובץ תרומה</span></a></li>
                         <li class="sidebar-subnav-header">תרומה בשווה</li>
 
                         @foreach($share_enterprise as $key1 => $item)
