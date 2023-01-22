@@ -12,61 +12,6 @@ use Illuminate\Support\Facades\DB;
 class ReportbankController extends Controller
 {
 
-    public function mainPage(Request $requset){
-        //var_dump($requset->fdate);
-
-        //if(!empty($requset->fdate)){
-        $reports = array();
-        if($requset->has('fdate')){
-            $id_bank =$requset->bankid;
-            $fromDate =$requset->fdate;
-            $toDate=$requset->tdate;
-            /**
-            $id_bank =1;
-            $fromDate ='2021-01-01';
-            $toDate='2021-12-31';
-             */
-
-            $r1 = $this->report1($id_bank ,$fromDate ,$toDate);
-            $reports[] = 'r1';
-
-            $r2 = $this->report2($id_bank ,$fromDate ,$toDate);
-            $reports[] = 'r2';
-            $r3 = $this->report3($id_bank ,$fromDate ,$toDate);
-            $reports[] = 'r3';
-            $r4 = $this->report4($id_bank ,$fromDate ,$toDate);
-            $reports[] = 'r4';
-            $r5 = $this->report5($id_bank ,$fromDate ,$toDate);
-            $reports[] = 'r5';
-            $r6 = $this->report6($id_bank ,$fromDate ,$toDate);
-            $reports[] = 'r6';
-
-            //return $r5;
-        }else{
-            $requset->fdate =  date('Y-01-01');
-            $requset->tdate =  date('Y-12-31') ;
-        }
-        //$requset->fdate = date('Y-01-01');
-        //var_dump($requset->fdate);
-        $id_bank =1;
-        $fromDate ='2021-01-01';
-        $toDate='2021-12-31';
-
-
-
-
-        $banks = Banks::with(['enterprise','projects'])->get();
-        //
-        return view('reports.reportbank' , compact('banks',$reports))
-            ->with(
-                [
-                    'pageTitle' => "تقارير بنكيه",
-                    'subTitle' => 'بناء تقارير بنكية',
-                ]
-            );
-
-    }
-
     public function mainPageNew(Request $requset){
         //var_dump($requset->fdate);
 

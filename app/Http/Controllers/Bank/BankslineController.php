@@ -241,6 +241,8 @@ class BankslineController extends Controller
             $nobank = 1;
         }
 
+
+
         $daterow->datemovement = $requset->datemovement;
         $daterow->datevalue = $requset->datemovement;
         $daterow->description = $requset->description;
@@ -253,6 +255,8 @@ class BankslineController extends Controller
         $daterow->duplicate = 0;
         $daterow->nobank = $nobank;
         $daterow->done = $done;
+
+
 
         $daterow->save();
 

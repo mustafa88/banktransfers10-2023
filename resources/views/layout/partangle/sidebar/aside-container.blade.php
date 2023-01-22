@@ -46,9 +46,9 @@
                     <ul class="sidebar-nav sidebar-subnav collapse" id="reports">
                         <li class="sidebar-subnav-header">דוחות</li>
                         <li class=" "><a href="{{route('reports.structure')}}" title="هيكل الجمعية"><span>هيكل الجمعية</span></a></li>
-                        <li class=" "><a href="{{route('reports.banksearch')}}" title="تقارير بنكية"><span>تقارير بنكية</span></a></li>
-                        <li class=" "><a href="{{route('reports.banksearch.new')}}" title="تقارير بنكية"><span>تقارير بنكية2</span></a></li>
+                        <li class=" "><a href="{{route('reports.banksearch.new')}}" title="تقارير بنكية"><span>تقارير بنكية</span></a></li>
                         <li class=" "><a href="{{route('reports.projsearch')}}" title="تقارير مشاريع"><span>تقارير مشاريع</span></a></li>
+                        <li class=" "><a href="{{route('reports.finalall')}}" title="تقرير شامل"><span>تقرير شامل</span></a></li>
                         <li class=" "><a href="#" title="تقارير تبرعات عينية"><span>تقارير تبرعات عينية</span></a></li>
                     </ul>
                 </li>

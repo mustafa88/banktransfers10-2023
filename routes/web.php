@@ -276,10 +276,14 @@ Route::group(['prefix' => 'managebanks/linedetail', 'namespace' => 'Bank', 'midd
 
 
 Route::group(['prefix' => 'reports/reportbank', 'namespace' => 'Bank', 'middleware' => ['web']], function () {
-    Route::get('search', [ReportbankController::class ,'mainPage'])->name('reports.banksearch');
+    //דוחות
     Route::get('searchNew', [ReportbankController::class ,'mainPageNew'])->name('reports.banksearch.new');
 
     Route::get('searchProj', [ReportProjectController::class ,'mainPageProj'])->name('reports.projsearch');
+
+    Route::get('searchFinal', [ReportProjectController::class ,'mainPageFinal'])->name('reports.finalall');
+
+
 
 
 });
