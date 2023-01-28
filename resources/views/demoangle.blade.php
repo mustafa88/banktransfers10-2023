@@ -13,10 +13,10 @@
 
 
 @section('page-script')
-    {{--  load file js from folder public --}}
+    <!-- {{--  load file js from folder public --}} -->
 @endsection
 
-{{-- @include(file js for this page - from folder views scripts ) --}}
+<!-- {{-- @include(file js for this page - from folder views scripts ) --}} -->
 
 
 

@@ -10,7 +10,6 @@ use Illuminate\Http\Request;
 class TitleTwoController extends Controller
 {
     public function store(TitleTwoRequset $requset){
-        //return $requset->tone_text;
         $arrDate = [
             'ttwo_one_id' => $requset->ttwo_one_id,
             'ttwo_text' => $requset->ttwo_text,
@@ -19,6 +18,5 @@ class TitleTwoController extends Controller
         ];
         Title_two::create($arrDate);
         return redirect()->back()->with("success", "تم الحفظ بنجاح");
-        //return "tone_text = " . $requset->tone_text ;
     }
 }
