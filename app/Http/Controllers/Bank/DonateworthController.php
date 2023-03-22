@@ -308,8 +308,6 @@ class DonateworthController extends Controller
             $resultArr['status'] = false;
             $resultArr['cls'] = 'error';
             $resultArr['msg'] = 'שורה לא קיימת';
-            $resultArr['msssg'] = $rowDonate;
-            $resultArr['aaaa'] = $id_donate;
             return response()->json($resultArr);
         }
         $resultArr['status'] = true;

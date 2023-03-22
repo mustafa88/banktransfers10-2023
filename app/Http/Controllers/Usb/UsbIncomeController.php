@@ -1,0 +1,401 @@
+<?php
+
+namespace App\Http\Controllers\Usb;
+
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Usb\UsbIncomeRequest;
+use App\Models\bank\City;
+use App\Models\bank\Currency;
+use App\Models\bank\Enterprise;
+use App\Models\bank\Income;
+use App\Models\bank\Projects;
+use App\Models\Bank\Title_two;
+use App\Models\Usb\Usbincome;
+use App\Traits\HelpersTrait;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+
+class UsbIncomeController extends Controller
+{
+
+    use HelpersTrait;
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\Response
+     */
+    public function index(Request $request,$id_entrep,$id_proj,$id_city)
+    {
+
+        if($request->fromDate!=null and $request->toDate!=null){
+            $request->session()->put('showLineFromDate',$request->fromDate);
+            $request->session()->put('showLineToDate',$request->toDate);
+        }
+
+        if(!$request->session()->has('showLineFromDate')){
+            $request->session()->put('showLineFromDate',date('Y-01-01'));
+        }
+
+        if(!$request->session()->has('showLineToDate')){
+            $request->session()->put('showLineToDate',date('Y-12-31'));
+        }
+
+        $showLineFromDate = $request->session()->get('showLineFromDate');
+        $showLineToDate = $request->session()->get('showLineToDate');
+
+        $a_title = Enterprise::find($id_entrep)->name . " => ";
+        $a_title .= Projects::find($id_proj)->name . " => ";
+        $a_title .= City::find($id_city)->city_name;
+
+        $currency = Currency::get();
+
+        $income = Income::whereHas('projects', function($q) use ($id_proj){
+            $q->where('projects.id', $id_proj);
+        })->get();
+
+        $title_two = Title_two::Where('ttwo_one_id',1)->get();
+
+
+        $usbincome = Usbincome::with(['enterprise','projects','city','income','currency','titletwo'])
+            ->where('dateincome', '>=', $showLineFromDate)
+            ->where('dateincome', '<=', $showLineToDate)
+            ->where('id_enter',$id_entrep)
+            ->where('id_proj',$id_proj)
+            ->where('id_city',$id_city)
+            ->get();
+
+        //return $usb;
+
+
+
+        $param_url = ['id_entrep'=>$id_entrep,'id_proj'=>$id_proj,'id_city'=>$id_city];
+
+        $dataTables='v1';
+        return view('usb.income' ,
+            //compact('enterprise','city','donatetype','donateworth')
+            compact('usbincome','currency','income','title_two','param_url','dataTables')
+        )
+            ->with(
+                [
+                    'pageTitle' => "سجل مدخولات {$a_title}",
+                    'subTitle' => 'سجل المدخولات للمشروع',
+                ]
+            );
+    }
+
+    public function showReport($id_entrep,$id_proj,$id_city ,$showLineFromDate ,$showLineToDate ){
+
+        //$showLineFromDate = $request->session()->get('showLineFromDate');
+        //$showLineToDate = $request->session()->get('showLineToDate');
+
+        //סוגי תרוה: מזומן צק וכו
+        $row_titletwo = Usbincome::select('Usbincome.id_titletwo', 'title_two.ttwo_text')
+            ->distinct()
+            ->leftJoin('title_two', 'title_two.ttwo_id', '=', 'Usbincome.id_titletwo')
+            ->where('dateincome', '>=', $showLineFromDate)
+            ->where('dateincome', '<=', $showLineToDate)
+            ->where('id_enter',$id_entrep)
+            ->where('id_proj',$id_proj)
+            ->where('id_city',$id_city)
+            ->get();
+
+        //return $row_titletwo;
+        // 3- תרומה במזומן
+        $arrProg = array();
+        $arrProgSum  = array();
+        //return $id_titletwo;
+        foreach ($row_titletwo as $value){
+            //return $value->id_titletwo;
+            $result = DB::table('Usbincome')
+                ->select('currency.symbol'
+                    //,'income.name as nameincome'
+                    ,DB::raw("round(sum(Usbincome.amount),2) as amount")
+                    ,DB::raw("count(uuid_usb) as count")
+                )
+                ->leftJoin('currency', 'currency.curn_id', '=', 'Usbincome.id_curn')
+                ->leftJoin('income', 'income.id', '=', 'Usbincome.id_incom')
+
+                ->where('dateincome', '>=', $showLineFromDate)
+                ->where('dateincome', '<=', $showLineToDate)
+                ->where('id_enter',$id_entrep)
+                ->where('id_proj',$id_proj)
+                ->where('id_city',$id_city)
+                ->where('id_titletwo', '=', $value->id_titletwo)
+
+                ->groupBy('currency.symbol')
+                //->groupBy('income.name')
+                //->orderBy('income.name')
+                //->orderBy('currency.symbol')
+            ;
+
+            $resulta = $result->get();
+            $arrProgSum[$value->id_titletwo]= $resulta;
+
+            $result->addSelect('income.name as nameincome');
+            $result->groupBy('income.name');
+                $result->orderBy('income.name');
+                $result->orderBy('currency.symbol');
+            $resultx = $result->get();
+
+            $arrProg[$value->id_titletwo]= $resultx;
+
+        }
+
+
+        //הוצאות
+        $arrProgExpense = DB::table('Usbexpense')
+            ->select('title_two.ttwo_text'
+                ,DB::raw("round(sum(Usbexpense.amount),2) as amount")
+                ,DB::raw("count(Usbexpense.uuid_usb) as count")
+            )
+            ->leftJoin('title_two', 'title_two.ttwo_id', '=', 'Usbexpense.id_titletwo')
+            ->where('dateexpense', '>=', $showLineFromDate)
+            ->where('dateexpense', '<=', $showLineToDate)
+            ->where('id_enter',$id_entrep)
+            ->where('id_proj',$id_proj)
+            ->where('id_city',$id_city)
+            ->groupBy('title_two.ttwo_text')
+            ->get();
+
+
+        $rowHtml = view('usb.incomeReport',['row_titletwo' => $row_titletwo
+            ,'arrProg'=>$arrProg ,'arrProgSum'=>$arrProgSum
+            ,'arrProgExpense'=>$arrProgExpense
+        ])->render();
+
+        $resultArr['status'] = true;
+        $resultArr['cls'] = 'success';
+
+        $resultArr['row_titletwo'] = $row_titletwo;
+        $resultArr['arrProg'] = $arrProg;
+        $resultArr['arrProgSum'] = $arrProgSum;
+        $resultArr['html'] = $rowHtml;
+
+        return $resultArr;
+        return response()->json($resultArr);
+
+
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function storeAjax(UsbIncomeRequest $request,$id_entrep,$id_proj,$id_city)
+    {
+        try {
+            \DB::beginTransaction(); // Tell Laravel all the code beneath this is a transaction
+
+            if($request->id_line != 0){
+                $resultArr['status'] = false;
+                $resultArr['cls'] = 'error';
+                $resultArr['msg'] = 'תקלה בשמירה';
+                return response()->json($resultArr);
+            }
+
+            $dateincome = date('Y-m-d');
+            $arrDate = [
+                'dateincome' => $dateincome,
+                'id_enter' =>$id_entrep,
+                'id_proj' => $id_proj,
+                'id_city' => $id_city,
+                'id_incom' => $request->id_incom,
+                'amount' => $request->amount,
+                'id_curn' => $request->id_curn,
+                'id_titletwo' => $request->id_titletwo,
+                'nameclient' => $request->nameclient,
+                'kabala' => $request->kabala,
+                'kabladat' => $request->kabladat,
+                'nameovid' => $request->nameovid,
+                'note' => $request->note,
+            ];
+
+            $rowinsert = Usbincome::create($arrDate);
+
+            $rowUsbincome = Usbincome::with(['enterprise','projects','city','income','currency','titletwo'])->find($rowinsert->uuid_usb );
+
+            $rowHtml =view('layout.includes.usbincome',['rowData' => $rowUsbincome])->render();
+            $rowHtml = trim(preg_replace("/\s+/", ' ', $rowHtml));
+
+            $resultArr['status'] = true;
+            $resultArr['cls'] = 'success';
+            $resultArr['msg'] = 'تم الحفظ بنجاح';
+            $resultArr['row'] = $rowUsbincome;
+
+            $resultArr['rowHtml'] = $rowHtml;
+
+            \DB::commit();
+
+            return $resultArr ;
+
+        }catch(\Exception $exp) {
+            \DB::rollBack(); // Tell Laravel, "It's not you, it's me. Please don't persist to DB"
+
+            $resultArr['status'] = false;
+            $resultArr['cls'] = 'error';
+            $resultArr['msg'] = 'حصل خطا اثناء الحفظ';
+            $resultArr['errormsg'] = $exp->getMessage();
+            return $resultArr;
+
+        }
+
+
+    }
+
+    public function updateAjax(UsbIncomeRequest $request,$id_entrep,$id_proj,$id_city,$uuid_usbincome)
+    {
+
+        try {
+            \DB::beginTransaction();
+
+            if($uuid_usbincome == 0){
+                $resultArr['status'] = false;
+                $resultArr['cls'] = 'error';
+                $resultArr['msg'] = 'תקלה בשמירה';
+                return response()->json($resultArr);
+            }
+
+            $rowUsbincome = Usbincome::where('id_enter',$id_entrep)
+                ->where('id_proj',$id_proj)
+                ->where('id_city',$id_city)
+                ->find($uuid_usbincome);
+
+            if(!$rowUsbincome){
+                $resultArr['status'] = false;
+                $resultArr['cls'] = 'error';
+                $resultArr['msg'] = 'שורה לא קיימת';
+                return response()->json($resultArr);
+            }
+
+            $rowUsbincome->id_incom = $request->id_incom ;
+            $rowUsbincome->amount = $request->amount ;
+            $rowUsbincome->id_curn = $request->id_curn ;
+            $rowUsbincome->id_titletwo = $request->id_titletwo ;
+            $rowUsbincome->nameclient = $request->nameclient;
+            $rowUsbincome->kabala = $request->kabala;
+            $rowUsbincome->kabladat = $request->kabladat;
+            $rowUsbincome->nameovid = $request->nameovid;
+            $rowUsbincome->note = $request->note;
+            $rowUsbincome->save();
+
+            $rowUsbincome = Usbincome::with(['enterprise','projects','city','income','currency','titletwo'])->find($uuid_usbincome );
+
+            $rowHtml =view('layout.includes.usbincome',['rowData' => $rowUsbincome])->render();
+
+
+            $resultArr['status'] = true;
+            $resultArr['cls'] = 'success';
+            $resultArr['msg'] = 'تم الحفظ بنجاح';
+            $resultArr['row'] = $rowUsbincome;
+            $resultArr['rowHtml'] = $rowHtml;
+            $resultArr['rowHtmlArr'] = $this->rowHtmlToArray($rowHtml);
+
+            \DB::commit();
+
+            return $resultArr;
+        }catch(\Exception $exp) {
+            \DB::rollBack();
+
+            $resultArr['status'] = false;
+            $resultArr['cls'] = 'error';
+            $resultArr['msg'] = 'حصل خطا اثناء الحفظ';
+            $resultArr['errormsg'] = $exp->getMessage();
+            return $resultArr;
+        }
+
+
+
+    }
+    /**
+     * @param UsbIncomeRequest $request
+     * @param $id_entrep
+     * @param $id_proj
+     * @param $id_city
+     * @param $uuid_usbincome
+     * @return void
+     */
+    public function editAjax(UsbIncomeRequest $request,$id_entrep,$id_proj,$id_city,$uuid_usbincome)
+    {
+        try {
+            \DB::beginTransaction();
+            $rowUsbincome = Usbincome::where('id_enter',$id_entrep)
+                ->where('id_proj',$id_proj)
+                ->where('id_city',$id_city)
+                ->find($uuid_usbincome);
+            if(!$rowUsbincome){
+                $resultArr['status'] = false;
+                $resultArr['cls'] = 'error';
+                $resultArr['msg'] = 'שורה לא קיימת';
+                return response()->json($resultArr);
+            }
+
+            $resultArr['status'] = true;
+            $resultArr['cls'] = 'info';
+            $resultArr['msg'] = 'עריכת שורה';
+            $resultArr['row'] = $rowUsbincome;
+
+            \DB::commit();
+            return $resultArr;
+
+        }catch(\Exception $exp) {
+            \DB::rollBack();
+
+            $resultArr['status'] = false;
+            $resultArr['cls'] = 'error';
+            $resultArr['msg'] = 'حصل خطا اثناء الحفظ';
+            $resultArr['errormsg'] = $exp->getMessage();
+            return $resultArr;
+        }
+
+
+
+
+    }
+
+    /**
+     * @param $id_entrep
+     * @param $id_proj
+     * @param $id_city
+     * @param $uuid_usbincome
+     * @return void
+     */
+    public function deleteAjax($id_entrep,$id_proj,$id_city,$uuid_usbincome)
+    {
+        try {
+            \DB::beginTransaction();
+            $rowUsbincome = Usbincome::where('id_enter',$id_entrep)
+                ->where('id_proj',$id_proj)
+                ->where('id_city',$id_city)
+                ->find($uuid_usbincome);
+            if(!$rowUsbincome){
+                $resultArr['status'] = false;
+                $resultArr['cls'] = 'error';
+                $resultArr['msg'] = 'שורה לא קיימת';
+                return response()->json($resultArr);
+            }
+
+            $rowUsbincome->delete();
+
+            $resultArr['status'] = true;
+            $resultArr['cls'] = 'success';
+            $resultArr['msg'] = 'تم الحذف بنجاح';
+            \DB::commit();
+
+            return $resultArr;
+
+        }catch(\Exception $exp) {
+            \DB::rollBack();
+            $resultArr['status'] = false;
+            $resultArr['cls'] = 'error';
+            $resultArr['msg'] = 'حصل خطا اثناء الحفظ';
+            $resultArr['errormsg'] = $exp->getMessage();
+            return $resultArr;
+        }
+
+
+
+    }
+
+}

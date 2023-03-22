@@ -17,6 +17,8 @@ use App\Http\Controllers\Bank\CampaignsController;
 use App\Http\Controllers\Bank\ReportProjectController;
 use App\Http\Controllers\Bank\DonateworthController;
 use App\Http\Controllers\Bank\DonateTypeController;
+use App\Http\Controllers\Usb\UsbIncomeController;
+use App\Http\Controllers\Usb\UsbExpenseController;
     /*middleware
     |--------------------------------------------------------------------------
     | Web Routes
@@ -27,6 +29,24 @@ use App\Http\Controllers\Bank\DonateTypeController;
     | contains the "web"  group. Now create something great!
     |
     */
+
+/*try {
+    \DB::beginTransaction();
+    ///...
+    \DB::commit();
+}catch(\Exception $exp) {
+    \DB::rollBack();
+    $resultArr['status'] = false;
+    $resultArr['cls'] = 'error';
+    $resultArr['msg'] = 'حصل خطا اثناء الحفظ';
+    $resultArr['errormsg'] = $exp->getMessage();
+    return $resultArr;
+}*/
+/*
+ * php artisan make:model Usb/Usbexpense
+ * php artisan make:controller Usb/UsbExpenseController --resource
+ * php artisan make:request Usb/UsbExpenseRequest
+ */
 /**
 Route::get('/', function () {
     return view('welcome');
@@ -194,6 +214,43 @@ Route::group(['prefix' => 'donate', 'namespace' => 'Bank', 'middleware' => ['web
 
 });
 **/
+
+Route::group(['prefix' => 'usb_income/{id_entrep}/{id_proj}/{id_city}', 'namespace' => 'Usb', 'middleware' => ['web']], function () {
+
+    Route::get('show', [UsbIncomeController::class ,'index'])->name('usb_income.show');
+    //INSERT
+     Route::post('store', [UsbIncomeController::class, 'storeAjax'])->name('usb_income.storeajax');
+    //EDIT
+    Route::get('store/{uuid_usbincome?}', [UsbIncomeController::class, 'editAjax'])->name('usb_income.editajax');
+    //UPDATE
+    Route::put('store/{uuid_usbincome?}', [UsbIncomeController::class, 'updateajax'])->name('usb_income.updateajax');
+    //DELETE
+    Route::delete('delete/{uuid_usbincome?}', [UsbIncomeController::class, 'deleteAjax'])->name('usb_income.deleteajax');
+    //report - סיכום
+    Route::get('showreport/{FromDate?}/{ToDate?}', [UsbIncomeController::class ,'showReport'])->name('usb_income.show.report');
+
+});
+
+
+Route::group(['prefix' => 'usb_expense/{id_entrep}/{id_proj}/{id_city}', 'namespace' => 'Usb', 'middleware' => ['web']], function () {
+
+    Route::get('show', [UsbExpenseController::class ,'index'])->name('usb_expense.show');
+    //INSERT
+    Route::post('store', [UsbExpenseController::class, 'storeAjax'])->name('usb_expense.storeajax');
+    //EDIT
+    Route::get('store/{uuid_usbexpense?}', [UsbExpenseController::class, 'editAjax'])->name('usb_expense.editajax');
+    //UPDATE
+    Route::put('store/{uuid_usbexpense?}', [UsbExpenseController::class, 'updateajax'])->name('usb_expense.updateajax');
+    //DELETE
+    Route::delete('delete/{uuid_usbexpense?}', [UsbExpenseController::class, 'deleteAjax'])->name('usb_expense.deleteajax');
+    //report - סיכום
+    Route::get('showreport/{FromDate?}/{ToDate?}', [UsbExpenseController::class ,'showReport'])->name('usb_expense.show.report');
+
+});
+
+
+
+
 Route::group(['prefix' => 'donate/{id_entrep}/{id_proj}/{id_city}', 'namespace' => 'Bank', 'middleware' => ['web']], function () {
     //תרומב בשווה - כניסה לעמות + פרויקט
     //מסך ראשי - תרומה בשווה
@@ -275,6 +332,10 @@ Route::group(['prefix' => 'managebanks/linedetail', 'namespace' => 'Bank', 'midd
 });
 
 
+
+
+
+
 Route::group(['prefix' => 'reports/reportbank', 'namespace' => 'Bank', 'middleware' => ['web']], function () {
     //דוחות
     Route::get('searchNew', [ReportbankController::class ,'mainPageNew'])->name('reports.banksearch.new');
@@ -282,8 +343,4 @@ Route::group(['prefix' => 'reports/reportbank', 'namespace' => 'Bank', 'middlewa
     Route::get('searchProj', [ReportProjectController::class ,'mainPageProj'])->name('reports.projsearch');
 
     Route::get('searchFinal', [ReportProjectController::class ,'mainPageFinal'])->name('reports.finalall');
-
-
-
-
 });
