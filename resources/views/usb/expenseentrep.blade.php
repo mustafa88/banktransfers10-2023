@@ -5,7 +5,6 @@
 @section('page-head')
 
     <style>
-
     </style>
 @endsection
 
@@ -32,14 +31,37 @@
                 @csrf
                 <div class="form-row align-items-center">
 
-                    {{--                    <div class="col-auto">--}}
-                    {{--                        <label for="dateincome">تاريخ التبرع</label>--}}
-                    {{--                        <input class="form-control mb-2" name="dateincome" id="dateincome" type="date" >--}}
-                    {{--                    </div>--}}
+                    <div class="col-auto">
+                        <label for="id_proj">المشروع</label>
+                        <select name="id_proj" id="id_proj" class="custom-select custom-select-sm">
+                            @foreach($projects as $item)
+                                <option value="{{$item['id']}}">{{$item['name']}} </option>
+                            @endforeach
+                        </select>
+                    </div>
 
                     <div class="col-auto">
-                        <label for="nameclient">اسم المتبرع</label>
-                        <input class="form-control mb-2" name='nameclient' id="nameclient" type="text">
+                        <label for="dateexpense">تاريخ الدفع</label>
+                        <input class="form-control mb-2" name="dateexpense" id="dateexpense" type="date">
+                    </div>
+
+                    <div class="col-auto ramdan">
+                        <label for="asmctaexpense">אסמכתא</label>
+                        <input class="form-control mb-2" name='asmctaexpense' id="asmctaexpense" type="number">
+                    </div>
+
+                    <div class="col-auto">
+                        <label for="id_expense">مورد</label>
+                        <select name="id_expense" id="id_expense" class="custom-select custom-select-sm">
+                            {{--
+                            <option value="0">اختر</option>
+                            <option value="999999">אחר</option>
+                            @foreach($expense as $item)
+                                <option value="{{$item['id']}}">{{$item['name']}}</option>
+                            @endforeach
+                            --}}
+                        </select>
+                        <input class="form-control mb-2" name="id_expenseother" id="id_expenseother" type="text" placeholder="صاحب خط التوزيع">
                     </div>
 
                     <div class="col-auto">
@@ -47,16 +69,7 @@
                         <input class="form-control mb-2" name='amount' id="amount" type="number">
                     </div>
 
-                    <div class="col-auto">
-                        <label for="id_curn">العملة</label>
-                        <select name="id_curn" id="id_curn" class="custom-select custom-select-sm">
-                            @foreach($currency as $item)
-                                <option value="{{$item['curn_id']}}">{{$item['symbol']}} - {{$item['name']}} </option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div class="col-auto">
+                    <div class="col-auto ramdan">
                         <label for="id_titletwo">طريقة الدفع</label>
                         <select name="id_titletwo" id="id_titletwo" class="custom-select custom-select-sm">
                             @foreach($title_two as $item)
@@ -65,40 +78,14 @@
                         </select>
                     </div>
 
-
-                    <div class="col-auto">
-                        <label for="id_incom">نوع التبرع</label>
-                        <select name="id_incom" id="id_incom" class="custom-select custom-select-sm">
-                            <option value="0">اختر النوع</option>
-                            @foreach($income as $item)
-                                <option value="{{$item['id']}}">{{$item['name']}}</option>
-                            @endforeach
-                        </select>
+                    <div class="col-auto ramdan">
+                        <label for="numinvoice">رقم الفاتورة</label>
+                        <input class="form-control mb-2" name='numinvoice' id="numinvoice" type="number">
                     </div>
 
-                    <div class="col-auto">
-                        <label for="kabala">رقم الوصل</label>
-                        <input class="form-control mb-2" name='kabala' id="kabala" type="number">
-                    </div>
-
-                    <div class="col-auto">
-                        <label for="kabladat">تاريخ الوصل</label>
-                        <input class="form-control mb-2" name="kabladat" id="kabladat" type="date">
-                    </div>
-
-                    <div class="col-auto">
-                        <label for="phone">هاتف المتبرع</label>
-                        <input class="form-control mb-2" name="phone" id="phone" type="text" maxlength="10">
-                    </div>
-
-                    <div class="col-auto">
-                        <label for="son">ابن الجمعية</label>
-                        <input class="form-control mb-2" name="son" id="son" type="checkbox">
-                    </div>
-
-                    <div class="col-auto">
-                        <label for="nameovid">اسم المستقبل</label>
-                        <input class="form-control mb-2" name='nameovid' id="nameovid" type="text">
+                    <div class="col-auto ramdan">
+                        <label for="dateinvoice">تاريخ الفاتورة</label>
+                        <input class="form-control mb-2" name="dateinvoice" id="dateinvoice" type="date">
                     </div>
                     <div class="col-auto">
                         <label for="note">ملاحظة</label>
@@ -165,24 +152,21 @@
                         <thead>
                         <tr>
                             <th>تاريخ</th>
-                            <th>المشروع</th>
-                            <th>اسم المتبرع</th>
+                            <th>مشروع</th>
+                            {{--<th>אסמכתא <br>מס צק, מס העברה וכו</th>--}}
+                            <th>المورد/شخص</th>
                             <th>مبلغ</th>
                             <th>طريقة الدفع</th>
-                            <th>نوع التبرع</th>
-                            <th>رقم الوصل</th>
-                            <th>تاريخ الوصل</th>
-                            <th>هاتف المتبرع</th>
-                            <th>ابن الجمعية</th>
-                            <th>اسم المستقبل</th>
+                            {{--<th>رقم الفاتوره</th>
+                            <th>تاريخ الفاتورة</th>--}}
                             <th>ملاحظه</th>
                             <th>פעולה</th>
                         </tr>
                         </thead>
                         <tbody>
 
-                        @foreach($usbincome as $item)
-                            @include('layout.includes.usbincomeentrep',['rowData' => $item])
+                        @foreach($usbexpense as $item)
+                            @include('layout.includes.usbexpense',['rowData' => $item])
                         @endforeach
 
                         </tbody>
@@ -199,13 +183,9 @@
 @section('page-script')
 
     <script src="{{ asset('angle/vendor/sweetalert2/dist/sweetalert2.all.min.js') }}"></script><!-- SWEET ALERT-->
-    @include( "scripts.usb.income" )
+    @include( "scripts.usb.expenseentrep" )
 
-    {{--
-    @include('layout.includes.linedetailedit')
 
-    @stack('linedetailedit-script')
-    --}}
 @endsection
 
 

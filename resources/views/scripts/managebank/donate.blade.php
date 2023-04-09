@@ -183,6 +183,11 @@
             InitPage();
         });
 
+
+        $(document).on('click', '#btn_cancel', function (e) {
+            InitPage();
+        });
+
         $(document).on('click', '#showbydate', function (e) {
             var fdate= $("#fromdate").val();
             var tdate= $("#todate").val();

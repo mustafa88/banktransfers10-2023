@@ -1,6 +1,26 @@
+@php
+    $colortd= "bg-green";
+    if(isset($rowData['id_proj'])){
+        switch ($rowData['id_proj']){
+                case "2":
+                    $colortd= "bg-info";
+                    break;
+                    case "3":
+                        $colortd= "bg-warning";
+                        break;
+                        case "12":
+                            $colortd= "bg-inverse  ";
+                            break;
+            }
+    }
+
+
+@endphp
+
 <tr>
     <td>{{$rowData['dateexpense']}}</td>
-    <td>{{$rowData['asmctaexpense']}}</td>
+    <td><a class="{{$colortd}}">{{$rowData['projects']['name']}}</a></td>
+    {{--<td>{{$rowData['asmctaexpense']}}</td>--}}
     <td>
         @if(is_null($rowData['id_expense']))
             {{$rowData['id_expenseother']}}
@@ -10,8 +30,8 @@
     </td>
     <td>{{$rowData['amount']}}</td>
     <td>{{$rowData['titletwo']['ttwo_text']}}</td>
-    <td>{{$rowData['numinvoice']}}</td>
-    <td>{{$rowData['dateinvoice']}}</td>
+    {{--<td>{{$rowData['numinvoice']}}</td>
+    <td>{{$rowData['dateinvoice']}}</td>--}}
     <td>{{$rowData['note']}}</td>
 
     <td>

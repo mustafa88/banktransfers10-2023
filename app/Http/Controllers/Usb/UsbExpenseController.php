@@ -43,7 +43,7 @@ class UsbExpenseController extends Controller
         $a_title .= City::find($id_city)->city_name;
 
         $expense = Expense::whereHas('projects', function($q) use ($id_proj){
-            $q->where('projects.id', $id_proj);
+            $q->where('projects.id', $id_proj)->where('inactive','0');
         })->get();
 
         $title_two = Title_two::Where('ttwo_one_id',1)->get();
@@ -72,34 +72,61 @@ class UsbExpenseController extends Controller
             );
     }
 
-    public function showReport($id_entrep,$id_proj,$id_city ,$showLineFromDate ,$showLineToDate ){
+    public function index_entrep(Request $request,$id_entrep,$id_city)
+    {
+        if($request->fromDate!=null and $request->toDate!=null){
+            $request->session()->put('showLineFromDate',$request->fromDate);
+            $request->session()->put('showLineToDate',$request->toDate);
+        }
 
+        if(!$request->session()->has('showLineFromDate')){
+            $request->session()->put('showLineFromDate',date('Y-01-01'));
+        }
 
-        $arrProg = array();
+        if(!$request->session()->has('showLineToDate')){
+            $request->session()->put('showLineToDate',date('Y-12-31'));
+        }
 
-        $result = DB::table('Usbexpense')
-            ->select('title_two.ttwo_text'
-                ,DB::raw("round(sum(Usbexpense.amount),2) as amount")
-                ,DB::raw("count(Usbexpense.uuid_usb) as count")
-            )
-            ->leftJoin('title_two', 'title_two.ttwo_id', '=', 'Usbexpense.id_titletwo')
+        $showLineFromDate = $request->session()->get('showLineFromDate');
+        $showLineToDate = $request->session()->get('showLineToDate');
+
+        $a_title = Enterprise::find($id_entrep)->name . " => ";
+        $a_title .= City::find($id_city)->city_name;
+
+        $projects = Projects::whereHas('city', function ($q) use ($id_city) {
+            $q->where('city.city_id', $id_city);
+        })->whereHas('enterprise', function ($q) use ($id_entrep) {
+            $q->where('enterprise.id', $id_entrep);
+        })
+            ->get();
+
+        $title_two = Title_two::Where('ttwo_one_id',1)->get();
+
+        $usbexpense = Usbexpense::with(['enterprise','projects','city','expense','titletwo'])
+
             ->where('dateexpense', '>=', $showLineFromDate)
             ->where('dateexpense', '<=', $showLineToDate)
             ->where('id_enter',$id_entrep)
-            ->where('id_proj',$id_proj)
+            //->where('id_proj',$id_proj)
             ->where('id_city',$id_city)
-            ->groupBy('title_two.ttwo_text')
             ->get();
 
-        $rowHtml = view('usb.expenseReport',['arrProgExpense'=>$result])->render();
+        //return $usbexpense;
+        $param_url = ['id_entrep'=>$id_entrep,'id_city'=>$id_city];
 
-        $resultArr['status'] = true;
-        $resultArr['cls'] = 'success';
-        $resultArr['html'] = $rowHtml;
-
-        return $resultArr;
-
+        $dataTables='v1';
+        return view('usb.expenseentrep' ,
+            //compact('enterprise','city','donatetype','donateworth')
+            compact('usbexpense','projects','title_two','param_url','dataTables')
+        )
+            ->with(
+                [
+                    'pageTitle' => "سجل المصروفات {$a_title}",
+                    'subTitle' => 'سجل المصروفات للمشروع',
+                ]
+            );
     }
+
 
     public function storeAjax(UsbExpenseRequest $request, $id_entrep, $id_proj, $id_city){
 
@@ -112,6 +139,7 @@ class UsbExpenseController extends Controller
                 $resultArr['msg'] = 'תקלה בשמירה';
                 return $resultArr;
             }
+
 
             if($request->id_expense=='999999' and $request->id_expenseother==null){
                 $resultArr['status'] = false;
@@ -181,7 +209,7 @@ class UsbExpenseController extends Controller
 
 
             $rowUsbexpense = Usbexpense::where('id_enter',$id_entrep)
-                ->where('id_proj',$id_proj)
+                //->where('id_proj',$id_proj)
                 ->where('id_city',$id_city)
                 ->find($uuid_usbexpense);
 
@@ -202,6 +230,7 @@ class UsbExpenseController extends Controller
 
 
 
+            $rowUsbexpense->id_proj = $id_proj;
             $rowUsbexpense->dateexpense =  $request->dateexpense;
             $rowUsbexpense->asmctaexpense =  $request->asmctaexpense;
             $rowUsbexpense->amount =  $request->amount;
@@ -253,7 +282,7 @@ class UsbExpenseController extends Controller
             \DB::beginTransaction();
 
             $rowUsbexpense = Usbexpense::where('id_enter',$id_entrep)
-                ->where('id_proj',$id_proj)
+                //->where('id_proj',$id_proj)
                 ->where('id_city',$id_city)
                 ->find($uuid_usbexpense);
 
@@ -285,7 +314,7 @@ class UsbExpenseController extends Controller
         try {
             \DB::beginTransaction();
             $rowUsbexpense = Usbexpense::where('id_enter',$id_entrep)
-                ->where('id_proj',$id_proj)
+                //->where('id_proj',$id_proj)
                 ->where('id_city',$id_city)
                 ->find($uuid_usbexpense);
 

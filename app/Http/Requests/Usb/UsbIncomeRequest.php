@@ -40,6 +40,7 @@ class UsbIncomeRequest extends FormRequest
                     'id_incom' => 'required|numeric|min:1',
                     'kabala' => 'required|numeric|min:1',
                     'kabladat' => 'required|date_format:Y-m-d',
+                    //'phone' => 'numeric',
                     'nameovid' => 'required',
                 ];
                 break;
@@ -54,6 +55,7 @@ class UsbIncomeRequest extends FormRequest
                     'id_incom' => 'required|numeric|min:1',
                     'kabala' => 'required|numeric|min:1',
                     'kabladat' => 'required|date_format:Y-m-d',
+                    //'phone' => 'numeric',
                     'nameovid' => 'required',
                 ];
                 //$arrRules = [];

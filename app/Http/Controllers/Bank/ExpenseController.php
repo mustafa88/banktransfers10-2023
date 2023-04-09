@@ -82,4 +82,19 @@ class ExpenseController extends Controller
         Expense::create($arrDate);
         return redirect()->back()->with("success", "تم الحفظ بنجاح");
     }
+
+    /**
+     * @return void
+     * מחזיר כל סוגי ההכנסות ל]רויקט מסויים
+     */
+    public function getByProjects($id_proj){
+        $expense = Expense::whereHas('projects', function($q) use ($id_proj){
+            $q->where('projects.id', $id_proj)->where('inactive','0');
+
+        })->get();
+
+        return $expense;
+    }
+
+
 }

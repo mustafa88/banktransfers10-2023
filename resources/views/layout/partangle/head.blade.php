@@ -22,6 +22,8 @@
 <link rel="stylesheet" href="{{ asset('angle/css/bootstrap-rtl.css') }}" id="bscss">
 <!-- =============== APP STYLES RTL ===============-->
 <link rel="stylesheet" href="{{ asset('angle/css/app-rtl.css') }}" id="maincss">
+<!-- ===============  SHARE FILE CSS - MUSTAFA ===============-->
+<link rel="stylesheet" href="{{ asset('css/sharecss/libcss.css') }}" >
 
 @if(isset($dataTables) and $dataTables=='v1')
     <!-- Datatables-->

@@ -5,13 +5,6 @@
 @section('page-head')
 
     <style>
-        .dropmenu {
-            position: absolute;
-            will-change: transform;
-            top: 0px;
-            left: 0px;
-            transform: translate3d(0px, 34px, 0px);
-        }
     </style>
 @endsection
 
@@ -95,6 +88,7 @@
 
                     <div class="col-auto">
                         <button class="btn btn-primary mb-2" type="button" name="btn_save" id="btn_save">حفظ</button>
+                        <button class="btn btn-secondary mb-2" type="button" name="btn_cancel" id="btn_cancel">الغاء</button>
                     </div>
                 </div>
                 <input type="hidden" name="id_line" id="id_line" value="0">

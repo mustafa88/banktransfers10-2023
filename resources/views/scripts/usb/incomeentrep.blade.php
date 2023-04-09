@@ -1,11 +1,16 @@
 
     <script type="text/javascript">
+
+
         let myTable,myRowTable=null;
+
+        let _param_url  ={!! json_encode($param_url) !!}
+
         $(document).ready(function(){
             myTable = $('#datatable1').DataTable({
                 'paging': true, // Table pagination
                 'ordering': true, // Column ordering
-                "order": [[ 0, 'asc'],[ 1, 'asc'],[ 2, 'asc']],
+                "order": [[ 0, 'desc']],
                 'info': true, // Bottom left status text
                 //fixedHeader: true,
                 responsive: true,
@@ -15,9 +20,28 @@
                 ],
                 iDisplayLength: -1
             });
+
+            InitPage();
         });
 
 
+
+        $('#id_proj').on( 'change', function () {
+            $('#id_incom').find('option').remove()
+
+            let url= '{{route('table.incomebyproject.store')}}';
+
+            url +="/"+$(this).val();
+            let resultAjax = SendToAjax(url,'GET');
+            //console.log(resultAjax);
+            //$('#id_incom').append(`<option value="0">اختر النوع</option>`);
+            for(let i=0;i<resultAjax.length;i++){
+                $('#id_incom').append(`<option value="${resultAjax[i]['id']}">  ${resultAjax[i]['name']} </option>`);
+            }
+
+            _param_url['id_proj']= $('#id_proj').val();
+
+        }).change();
         /**
          * שמירה
          * save new data or update data exists
@@ -34,9 +58,13 @@
             //alert(id_line);
             if(id_line=='0'){
                 //insert
-                let url= '{{route('mainDonate.storeajax')}}';
+                let url= '{{route('usb_income.storeajax',['p1','p2','p3'])}}';
+                url = urlParam(url);
+                //console.log(url);
+
+                //return url;
                 let resultAjax = SendToAjax(url,'POST');
-                //console.log(resultAjax);
+                console.log(resultAjax);
                 if(resultAjax==undefined){
                     notify('حدث خطأ','error');
                     return false;
@@ -45,15 +73,21 @@
                 if(resultAjax.status===false){
                     return;
                 }
-                myTable.row.add($(resultAjax['rowHtml'])[0]).draw();
+                //console.log(myTable.row)
+                let thisRow =  myTable.row.add($(resultAjax['rowHtml'])[0]).draw().node();
+                //console.log(newRow.node());
+                //console.log($(newRow).find('tr'));
+                //console.log($(newRow.node()).find('td'));
+                animationNewElement(thisRow);
             }else{
                 //return;
                 //update
                 //notify('update');
-                let url= '{{route('mainDonate.updateajax')}}';
-                url +="/"+id_line;
+                let url= '{{route('usb_income.updateajax',['p1','p2','p3'])}}';
+                url = urlParam(url,id_line);
+
                 let resultAjax = SendToAjax(url,'PUT');
-                console.log(resultAjax);
+                //console.log(resultAjax);
                 //return;
                 if(resultAjax==undefined){
                     notify('حدث خطأ','error');
@@ -63,7 +97,6 @@
                 if(resultAjax.status===false){
                     return;
                 }
-
 
                 let numberRow = myTable.row(myRowTable)[0][0];
                 let row = myTable.row(numberRow);
@@ -72,6 +105,8 @@
                     myTable.cell(row, i).data(newData[i]);
                 }
                 myTable.draw();
+                let thisRow = row.node();
+                animationNewElement(thisRow);
                 //let thisRow = row.node();
                 //$(thisRow).find('td').eq(1).css("background-color",newData['color_code']);
 
@@ -89,10 +124,12 @@
             var nRow = $(this).parents('tr')[0];
             var aData = myTable.row(nRow).data();
 
-            let url='{{route('mainDonate.editajax')}}';
-            url +="/"+idline;
+            let url='{{route('usb_income.editajax',['p1','p2','p3'])}}';
+            url = urlParam(url,idline);
+            //alert(url);
 
             let resultAjax = SendToAjax(url,'GET');
+            //console.log(resultAjax);
 
             if(resultAjax.status===false){
                 notify(resultAjax.msg ,resultAjax.cls);
@@ -102,13 +139,21 @@
             $("#id_line").val('0');
 
 
-            $("#datedont").val(row.datedont);
-            $("#enterp").val(row.id_enter + "*" + row.id_proj);
-            $("#id_city").val(row.id_city);
-            $("#id_typedont").val(row.id_typedont);
+            $("#id_proj").val(row.id_proj).change();
+            $("#nameclient").val(row.nameclient);
             $("#amount").val(row.amount);
-            $("#description").val(row.description);
-            $("#namedont").val(row.namedont);
+            $("#id_curn").val(row.id_curn);
+            $("#id_titletwo").val(row.id_titletwo);
+            $("#id_incom").val(row.id_incom);
+            $("#kabala").val(row.kabala);
+            $("#nameovid").val(row.nameovid);
+            $("#note").val(row.note);
+            $("#kabladat").val(row.kabladat);
+
+            if(row.son =='1'){
+                $("#son").prop('checked', true);
+            }
+            $("#phone").val(row.phone);
 
             myRowTable=nRow;
             $("#id_line").val(idline);
@@ -133,8 +178,8 @@
             var aData = myTable.row(nRow).data();
             let idline = $(this).data('idline');
             $("#id_line").val(idline);
-            let url= '{{route('mainDonate.deleteajax')}}';
-            url +="/"+idline;
+            let url= '{{route('usb_income.deleteajax',['p1','p2','p3'])}}';
+            url = urlParam(url,idline);
             let resultAjax = SendToAjax(url,'DELETE');
             //console.log(resultAjax);
             if(resultAjax==undefined){
@@ -149,111 +194,84 @@
             InitPage();
         });
 
+        $(document).on('click', '#btn_cancel', function (e) {
+            InitPage();
+        });
+
         $(document).on('click', '#showbydate', function (e) {
             var fdate= $("#fromdate").val();
             var tdate= $("#todate").val();
-            var showTitleTwo= $("#showTitleTwo").val();
-            let url='{{ route('mainDonate.show') }}';
+            let url='{{route('usb_income_entrep.show' ,['p1','p3'])}}';
+            url = urlParam(url);
 
             if(fdate=="" || tdate==""){
                 notify("תאריך לא תקין" ,"error");
                 return false;
             }
             //url += "/" + fdate + "/" + tdate;
+            url += "?fromDate=" + fdate + "&toDate=" + tdate;
             //alert(url);
             window.location = url;
         });
 
 
+        $(document).on('click', '#showbydatereport', function (e) {
+
+            var fdate= $("#fromdate").val();
+            var tdate= $("#todate").val();
+            if(fdate=="" || tdate==""){
+                notify("תאריך לא תקין" ,"error");
+                return false;
+            }
+
+            let url='{{route('usb_report.show' ,['p1'])}}';
+            url = urlParam(url);
+            url += "?fromDate=" + fdate + "&toDate=" + tdate;
+
+            alert(url);
+            window.location.href = url;
+        });
+
+        function urlParam(url ,id_line){
+            url = url.replace('p1', _param_url['id_entrep'] ).replace('p2', _param_url['id_proj'] ).replace('p3', _param_url['id_city'] )
+            if(id_line!= undefined ){
+                url += "/" + id_line;
+            }
+            return url;
+        }
+
+
+
+
         function InitPage(){
+
             myRowTable=null;
             $("#id_line").val('0');
 
-            $("#datedont").val('');
-            $("#enterp").val('0');
-            $("#id_city").val('0');
-            $("#id_typedont").val('0');
+            $("#id_proj").val('1').change();
+            $("#nameclient").val('');
             $("#amount").val('');
-            $("#description").val('');
-            $("#namedont").val('');
+            $("#id_curn").val('1');
+            $("#id_titletwo").val('3');
+            //$("#id_incom").val('0');
+            $("#kabala").val('');
+            $("#nameovid").val('');
+            $("#phone").val('');
+            $("#son").prop('checked', false);
+            $("#note").val('');
 
+            let today = new Date();
+            let yyyy = today.getFullYear();
+            let mm = today.getMonth() + 1; // Months start at 0!
+            let dd = today.getDate();
+
+            if (dd < 10) dd = '0' + dd;
+            if (mm < 10) mm = '0' + mm;
+
+            const formattedToday =  yyyy + '-' + mm + '-' + dd;
+            $("#kabladat").val(formattedToday);
         }
 
-
-        function selectAll(){
-            $("input[name='selectbox[]']").prop("checked", true);
-        }
-
-        function unSelectAll(){
-            $("input[name='selectbox[]']").prop("checked", false);
-        }
-
-        function divlineditels(){
-            var selectbox = $("input[name='selectbox[]']:checked");
-            //alert(selectbox.length)
-            let firsdata = $(selectbox [0]).data('titletwo');
-            let idline = $(selectbox [0]).val();
-            if(firsdata==0){
-                Swal.fire('נא לבחור שורות מהטבלה', '', 'info')
-                return false;
-            }
-            for (let i=0;i<selectbox.length;i++){
-                if($(selectbox [i]).data('titletwo')!=firsdata){
-                    Swal.fire('נא לבחור שורות מאותו סוג תנועה');
-                    return false;
-                }
-            }
-            dataObj = {};
-            dataObj['idline']= $("#statos").val();
-
-            //let url= ' route('linebanks.showrowdetils',$bank['id_bank']) ';
-            url +="/"+idline;
-            //alert(url);
-            let resultAjax = SendToAjax(url,'GET','-1');
-            if(resultAjax==undefined){
-                notify('حدث خطأ','error');
-                return false;
-            }
-
-            Swal.fire({
-                title: '<strong>חלוקת שורה</strong>',
-                //icon: 'info',
-                html: resultAjax['html'],
-                width: 1000,
-                showDenyButton: true,
-                //showCancelButton: true,
-                confirmButtonText: 'حفظ',
-                denyButtonText: `الغاء`,
-            }).then((result) => {
-                /* Read more about isConfirmed, isDenied below */
-                if (result.isConfirmed) {
-                    var dataObj = {};
-                    document.querySelectorAll('.inptrowdetl').forEach(function(el){
-                        dataObj[el.id]= el.value;
-                    });
-                    dataObj['scome']='1';
-                    //console.log(dataObj);
-                    var counterSave=0;
-                    for (let i=0;i<selectbox.length;i++) {
-                        var idline_aj = $(selectbox[i]).val();
-                        //let url= ' route('linedetail.storemultirowajax',$bank['id_bank'])  ';
-                        url +="/"+idline_aj;
-                        let resultAjax = SendToAjax(url,'POST',null,dataObj);
-                        //console.log(resultAjax);
-                        if(resultAjax!=undefined && resultAjax['status']!=undefined && resultAjax['status']==true){
-                            counterSave++;
-                            $(selectbox[i]).prop("checked", false);
-                        }
-                    }
-
-                    Swal.fire(" נמשרו " + counterSave + " שורות מתוך " + selectbox.length + " שורות "  )
-                } else if (result.isDenied) {
-                    Swal.fire('שינוי לא בוצע', '', 'info')
-                }
-            })
-
-
-        }
     </script>
 
 

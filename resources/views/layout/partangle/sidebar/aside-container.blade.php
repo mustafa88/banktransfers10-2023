@@ -25,6 +25,10 @@
                         <em class="fas fa-home"></em><span>דף ראשי</span>
                     </a></li>
 
+                <li class=" "><a href="{{ route('export_import') }}" title="דף ראשי">
+                        <em class="fas icon-layers"></em><span>יבוא ויצאו קבצים</span>
+                    </a></li>
+
                 <li class=" "><a href="#tablesmanage" title="Tables" data-toggle="collapse"><em class="icon-grid"></em><span >הגדרות מערכת</span></a>
                     <ul class="sidebar-nav sidebar-subnav collapse" id="tablesmanage">
                         <li class="sidebar-subnav-header">הגדרות מערכת</li>
@@ -53,19 +57,28 @@
                     </ul>
                 </li>
 
-                <li class=" "><a href="#li_donate" title="Tables" data-toggle="collapse"><em class="icon-grid"></em><span >תרומה בשווה</span></a>
+                <li class=" "><a href="#li_donate" title="Tables" data-toggle="collapse"><em class="icon-grid"></em><span >تبرعات عينية</span></a>
 
                 <ul class="sidebar-nav sidebar-subnav collapse" id="li_donate">
-                    <li class="sidebar-subnav-header">תרומה בשווה</li>
-                    <li class=" "><a href="{{route('mainDonate.exportimport')}}" title="יבוא-יצוא קובץ תרומה"><span>יבוא-יצוא קובץ תרומה</span></a></li>
+                    <li class="sidebar-subnav-header">تبرعات عينية</li>
 
 
                         @foreach($share_enterprise as $key1 => $item)
                         <li class=" "><a href="#ul_donate_{{$key1}}" title="{{$item['name']}}" data-toggle="collapse"><em class="fas fa-angle-left"></em><span>{{$item['name']}}</span></a>
                             <ul class="sidebar-nav sidebar-subnav collapse" id="ul_donate_{{$key1}}">
                                 <li class="sidebar-subnav-header">{{$item['name']}}</li>
-
                                 @foreach($item['project'] as $key2 => $item2)
+                                    @foreach($item2['city'] as $key3 => $item3)
+                                        <li class=" ">
+                                            <a href="{{route('mainDonate.show',['id_entrep'=>$item['id'],'id_proj'=>$item2['id'],'id_city'=>$item3['city_id']])}}"
+                                               title="{{$item3['city_name']}}" aria-expanded="true" >
+                                                <span>{{$item2['name']}} => {{$item3['city_name']}}</span>
+                                            </a>
+                                        </li>
+                                    @endforeach
+                                @endforeach
+
+                                {{--@foreach($item['project'] as $key2 => $item2)
                                 <li class=" "><a href="#ul_donate_{{$key1}}_{{$key2}}" title="{{$item2['name']}}" data-toggle="collapse"><em class="fas fa-angle-left"></em><span>{{$item2['name']}}</span></a>
                                     <ul class="sidebar-nav sidebar-subnav collapse" id="ul_donate_{{$key1}}_{{$key2}}">
                                         <li class="sidebar-subnav-header">{{$item2['name']}}</li>
@@ -81,7 +94,7 @@
 
                                     </ul>
                                 </li>
-                                @endforeach
+                                @endforeach--}}
 
                             </ul>
                         </li>
@@ -89,40 +102,72 @@
                     </ul>
                 </li>
 
-
                 <li class=" "><a href="#li_usbin" title="Tables" data-toggle="collapse"><em class="icon-grid"></em><span >سجل المدخولات</span></a>
 
                     <ul class="sidebar-nav sidebar-subnav collapse" id="li_usbin">
                         <li class="sidebar-subnav-header">سجل المدخولات</li>
-                        <li class=" "><a href="" title="יבוא-יצוא קובץ תרומה"><span>יבוא-יצוא קובץ</span></a></li>
 
 
-                        @foreach($share_enterprise as $key1 => $item)
-                            <li class=" "><a href="#ul_usbin_{{$key1}}" title="{{$item['name']}}" data-toggle="collapse"><em class="fas fa-angle-left"></em><span>{{$item['name']}}</span></a>
-                                <ul class="sidebar-nav sidebar-subnav collapse" id="ul_usbin_{{$key1}}">
-                                    <li class="sidebar-subnav-header">{{$item['name']}}</li>
+                        <li class=" ">
+                            <a href="{{route('usb_income_entrep.show',['id_entrep'=>'1','id_city'=>'2'])}}"
+                               title="الطيبة" aria-expanded="true" >
+                                <span>عطاء -->  الطيبة</span>
+                            </a>
+                        </li>
 
-                                    @foreach($item['project'] as $key2 => $item2)
-                                        <li class=" "><a href="#ul_usbin_{{$key1}}_{{$key2}}" title="{{$item2['name']}}" data-toggle="collapse"><em class="fas fa-angle-left"></em><span>{{$item2['name']}}</span></a>
-                                            <ul class="sidebar-nav sidebar-subnav collapse" id="ul_usbin_{{$key1}}_{{$key2}}">
-                                                <li class="sidebar-subnav-header">{{$item2['name']}}</li>
+                        <li class=" ">
+                            <a href="{{route('usb_income_entrep.show',['id_entrep'=>'1','id_city'=>'3'])}}"
+                               title="الطيبة" aria-expanded="true" >
+                                <span>عطاء -->  قلنسوة</span>
+                            </a>
+                        </li>
 
-                                                @foreach($item2['city'] as $key3 => $item3)
+                        <li class=" ">
+                            <a href="{{route('usb_income_entrep.show',['id_entrep'=>'1','id_city'=>'4'])}}"
+                               title="الطيبة" aria-expanded="true" >
+                                <span>عطاء -->  الطيرة</span>
+                            </a>
+                        </li>
 
-                                                    <li class=" ">
-                                                        <a href="{{route('usb_income.show',['id_entrep'=>$item['id'],'id_proj'=>$item2['id'],'id_city'=>$item3['city_id']])}}" title="{{$item3['city_name']}}">
-                                                            <span>{{$item3['city_name']}}</span>
-                                                        </a>
+                        {{--
+                                    @foreach($share_enterprise as $key1 => $item)
+                                        <li class=" "><a href="#ul_usbin_{{$key1}}" title="{{$item['name']}}" data-toggle="collapse"><em class="fas fa-angle-left"></em><span>{{$item['name']}}</span></a>
+                                            <ul class="sidebar-nav sidebar-subnav collapse" id="ul_usbin_{{$key1}}">
+                                                <li class="sidebar-subnav-header">{{$item['name']}}</li>
+                                                @foreach($item['project'] as $key2 => $item2)
+                                                    @foreach($item2['city'] as $key3 => $item3)
+                                                        <li class=" ">
+                                                            <a href="{{route('usb_income.show',['id_entrep'=>$item['id'],'id_proj'=>$item2['id'],'id_city'=>$item3['city_id']])}}"
+                                                               title="{{$item3['city_name']}}" aria-expanded="true" >
+                                                                <span>{{$item2['name']}} => {{$item3['city_name']}}</span>
+                                                            </a>
+                                                        </li>
+                                                    @endforeach
+                                                @endforeach
+                                                {{--
+                                                @foreach($item['project'] as $key2 => $item2)
+                                                    <li class=" "><a href="#ul_usbin_{{$key1}}_{{$key2}}" title="{{$item2['name']}}" data-toggle="collapse"><em class="fas fa-angle-left"></em><span>{{$item2['name']}}</span></a>
+                                                        <ul class="sidebar-nav sidebar-subnav collapse" id="ul_usbin_{{$key1}}_{{$key2}}">
+                                                            <li class="sidebar-subnav-header">{{$item2['name']}}</li>
+
+                                                            @foreach($item2['city'] as $key3 => $item3)
+
+                                                                <li class=" ">
+                                                                    <a href="{{route('usb_income.show',['id_entrep'=>$item['id'],'id_proj'=>$item2['id'],'id_city'=>$item3['city_id']])}}" title="{{$item3['city_name']}}">
+                                                                        <span>{{$item3['city_name']}}</span>
+                                                                    </a>
+                                                                </li>
+                                                            @endforeach
+
+                                                        </ul>
                                                     </li>
                                                 @endforeach
-
-                                            </ul>
-                                        </li>
-                                    @endforeach
+                                                --}
 
                                 </ul>
                             </li>
                         @endforeach
+                        --}}
                     </ul>
                 </li>
 
@@ -132,15 +177,45 @@
 
                     <ul class="sidebar-nav sidebar-subnav collapse" id="li_usbex">
                         <li class="sidebar-subnav-header">سجل المصروفات</li>
-                        <li class=" "><a href="" title="יבוא-יצוא קובץ תרומה"><span>יבוא-יצוא קובץ</span></a></li>
 
+                        <li class=" ">
+                            <a href="{{route('usb_expense_entrep.show',['id_entrep'=>'1','id_city'=>'2'])}}"
+                               title="الطيبة" aria-expanded="true" >
+                                <span>عطاء -->  الطيبة</span>
+                            </a>
+                        </li>
 
+                        <li class=" ">
+                            <a href="{{route('usb_expense_entrep.show',['id_entrep'=>'1','id_city'=>'3'])}}"
+                               title="الطيبة" aria-expanded="true" >
+                                <span>عطاء -->  قلنسوة</span>
+                            </a>
+                        </li>
+
+                        <li class=" ">
+                            <a href="{{route('usb_expense_entrep.show',['id_entrep'=>'1','id_city'=>'4'])}}"
+                               title="الطيبة" aria-expanded="true" >
+                                <span>عطاء -->  الطيرة</span>
+                            </a>
+                        </li>
+
+                        {{--
                         @foreach($share_enterprise as $key1 => $item)
                             <li class=" "><a href="#ul_usbex_{{$key1}}" title="{{$item['name']}}" data-toggle="collapse"><em class="fas fa-angle-left"></em><span>{{$item['name']}}</span></a>
                                 <ul class="sidebar-nav sidebar-subnav collapse" id="ul_usbex_{{$key1}}">
                                     <li class="sidebar-subnav-header">{{$item['name']}}</li>
-
                                     @foreach($item['project'] as $key2 => $item2)
+                                        @foreach($item2['city'] as $key3 => $item3)
+                                            <li class=" ">
+                                                <a href="{{route('usb_expense.show',['id_entrep'=>$item['id'],'id_proj'=>$item2['id'],'id_city'=>$item3['city_id']])}}"
+                                                   title="{{$item3['city_name']}}" aria-expanded="true" >
+                                                    <span>{{$item2['name']}} => {{$item3['city_name']}}</span>
+                                                </a>
+                                            </li>
+                                        @endforeach
+                                    @endforeach
+
+                                    {{--@foreach($item['project'] as $key2 => $item2)
                                         <li class=" "><a href="#ul_usbex_{{$key1}}_{{$key2}}" title="{{$item2['name']}}" data-toggle="collapse"><em class="fas fa-angle-left"></em><span>{{$item2['name']}}</span></a>
                                             <ul class="sidebar-nav sidebar-subnav collapse" id="ul_usbex_{{$key1}}_{{$key2}}">
                                                 <li class="sidebar-subnav-header">{{$item2['name']}}</li>
@@ -156,11 +231,12 @@
 
                                             </ul>
                                         </li>
-                                    @endforeach
+                                    @endforeach--}
 
                                 </ul>
                             </li>
                         @endforeach
+                        --}}
                     </ul>
                 </li>
 
@@ -170,10 +246,6 @@
                     <ul class="sidebar-nav sidebar-subnav collapse" id="banks">
                         <li class="sidebar-subnav-header">בנקים</li>
                         <li class=" "><a href="{{route('banks.show')}}" title="قائمة البنوك"><span>قائمة البنوك</span></a></li>
-
-                        {{--
-                        <li class=" "><a href="{{route('mainDonate.show')}}" title="תרומה בשווה"><span>תרומה בשווה</span></a></li>
-                        --}}
 
                         <li class=" "><a href="{{route('banks.mainLoadCsv')}}" title="העלאת קובץ אקסל"><span>העלאת קובץ אקסל</span></a></li>
 

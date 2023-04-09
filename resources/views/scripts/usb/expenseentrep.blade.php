@@ -4,7 +4,7 @@
 
         let myTable,myRowTable=null;
 
-
+        let _param_url  ={!! json_encode($param_url) !!}
         $(document).ready(function(){
             myTable = $('#datatable1').DataTable({
                 'paging': true, // Table pagination
@@ -23,33 +23,24 @@
             InitPage();
         });
 
-        /**
-        $('#id_typedont').on( 'change', function () {
-            //שינוי סוג תרומה - משנה מחיר יחידה
-            let price =  $('#id_typedont').find(":selected").data('price');
-            $("#price").val(price);
-            culcAmountLine();
-        });
+        $('#id_proj').on( 'change', function () {
+            $('#id_expense').find('option').remove()
 
-        $('#price').on( 'change', function () {
-            //שינוי מחיר יחידה
-            culcAmountLine();
-        });
+            let url= '{{route('table.expensebyproject.store')}}';
 
-        $('#quantity').on( 'change', function () {
-            //שינוי כמות
-            culcAmountLine();
-        });
-
-        $('#amount').on( 'change', function () {
-            if($('#quantity').val()==0){
-                return;
+            url +="/"+$(this).val();
+            let resultAjax = SendToAjax(url,'GET');
+            //console.log(resultAjax);
+            $('#id_expense').append(`<option value="0">اختر</option>`);
+            $('#id_expense').append(`<option value="999999">صاحب خط التوزيع</option>`);
+            for(let i=0;i<resultAjax.length;i++){
+                $('#id_expense').append(`<option value="${resultAjax[i]['id']}">  ${resultAjax[i]['name']} </option>`);
             }
-             let price = $('#amount').val()/$('#quantity').val();
-            price = parseFloat(price).toFixed(2);
-            $("#price").val(price);
-        });
-        **/
+            $("#id_expense").val('999999');
+            _param_url['id_proj']= $('#id_proj').val();
+
+            $('#id_expense').change();
+        }).change();
 
         /**
          * שמירה
@@ -67,7 +58,8 @@
             //alert(id_line);
             if(id_line=='0'){
                 //insert
-                let url= '{{route('usb_income.storeajax',$param_url)}}';
+                let url= '{{route('usb_expense.storeajax',['p1','p2','p3'])}}';
+                url = urlParam(url);
                 //console.log(url);
 
                 //return url;
@@ -81,14 +73,17 @@
                 if(resultAjax.status===false){
                     return;
                 }
-                myTable.row.add($(resultAjax['rowHtml'])[0]).draw();
+                let thisRow = myTable.row.add($(resultAjax['rowHtml'])[0]).draw().node();
+                //console.log(xxx);
+                //$(xxx.node()).addClass('add-animation');
+                animationNewElement(thisRow);
             }else{
                 //return;
                 //update
                 //notify('update');
-                let url= '{{route('usb_income.updateajax',$param_url)}}';
+                let url= '{{route('usb_expense.updateajax',['p1','p2','p3'])}}';
+                url = urlParam(url,id_line);
 
-                url +="/"+id_line;
                 let resultAjax = SendToAjax(url,'PUT');
                 //console.log(resultAjax);
                 //return;
@@ -108,7 +103,16 @@
                     myTable.cell(row, i).data(newData[i]);
                 }
                 myTable.draw();
-                //let thisRow = row.node();
+                let thisRow = row.node();
+
+                animationNewElement(thisRow);
+                /**
+                $(thisRow).addClass('add-animation');
+                setTimeout(() => {
+                    $(thisRow).removeClass('add-animation');
+                }, 2000)
+                **/
+                //console.log($(thisRow));
                 //$(thisRow).find('td').eq(1).css("background-color",newData['color_code']);
 
 
@@ -125,8 +129,8 @@
             var nRow = $(this).parents('tr')[0];
             var aData = myTable.row(nRow).data();
 
-            let url='{{route('usb_income.editajax',$param_url)}}';
-            url +="/"+idline;
+            let url='{{route('usb_expense.editajax',['p1','p2','p3'])}}';
+            url = urlParam(url,idline);
             //alert(url);
 
             let resultAjax = SendToAjax(url,'GET');
@@ -138,23 +142,22 @@
             }
             let row = resultAjax.row;
             $("#id_line").val('0');
-
-
-            $("#nameclient").val(row.nameclient);
-            $("#amount").val(row.amount);
-            $("#id_curn").val(row.id_curn);
-            $("#id_titletwo").val(row.id_titletwo);
-            $("#id_incom").val(row.id_incom);
-            $("#kabala").val(row.kabala);
-            $("#nameovid").val(row.nameovid);
-            $("#note").val(row.note);
-            $("#kabladat").val(row.kabladat);
-
-            $("#phone").val(row.phone);
-            if(row.son =='1'){
-                $("#son").prop('checked', true);
+            $("#id_proj").val(row.id_proj).change();
+            //console.log(row.id_expense);
+            if(row.id_expense== null){
+                row.id_expense='999999';
             }
+            $("#dateexpense").val(row.dateexpense);
+            $("#asmctaexpense").val(row.asmctaexpense);
+            $("#id_expense").val(row.id_expense);
+            $("#id_expenseother").val(row.id_expenseother);
+            $("#amount").val(row.amount);
+            $("#id_titletwo").val(row.id_titletwo);
+            $("#numinvoice").val(row.numinvoice);
+            $("#dateinvoice").val(row.dateinvoice);
+            $("#note").val(row.note);
 
+            $('#id_expense').change();
 
             myRowTable=nRow;
             $("#id_line").val(idline);
@@ -179,8 +182,8 @@
             var aData = myTable.row(nRow).data();
             let idline = $(this).data('idline');
             $("#id_line").val(idline);
-            let url= '{{route('usb_income.deleteajax',$param_url)}}';
-            url +="/"+idline;
+            let url= '{{route('usb_expense.deleteajax',['p1','p2','p3'])}}';
+            url = urlParam(url,idline);
             let resultAjax = SendToAjax(url,'DELETE');
             //console.log(resultAjax);
             if(resultAjax==undefined){
@@ -202,7 +205,8 @@
         $(document).on('click', '#showbydate', function (e) {
             var fdate= $("#fromdate").val();
             var tdate= $("#todate").val();
-            let url='{{route('usb_income.show' ,$param_url)}}';
+            let url='{{route('usb_expense_entrep.show' ,['p1','p3'])}}';
+            url = urlParam(url);
 
             if(fdate=="" || tdate==""){
                 notify("תאריך לא תקין" ,"error");
@@ -223,49 +227,47 @@
                 return false;
             }
 
-            let url='{{route('usb_income.show.report' ,$param_url)}}';
-            url += "/" + fdate + "/" + tdate;
+            let url='{{route('usb_report.show' ,['p1'])}}';
+            url = urlParam(url);
+            url += "?fromDate=" + fdate + "&toDate=" + tdate;
 
-            let resultAjax = SendToAjax(url,'GET');
+            //alert(url);
+            window.location.href = url;
 
-            console.log(resultAjax);
-
-            Swal.fire({
-                title: '<strong>تلخيص المدخولات</strong>',
-                //icon: 'info',
-                html: resultAjax['html'],
-                width: 1000,
-                showDenyButton: false,
-                //showCancelButton: true,
-                confirmButtonText: 'أغلاق',
-                //denyButtonText: `اغلاق`,
-            }).then((result) => {
-                /* Read more about isConfirmed, isDenied below
-                if (result.isConfirmed) {
-                    var dataObj = {};
-
-                    Swal.fire("   שורות "  )
-                } else if (result.isDenied) {
-                    Swal.fire('שינוי לא בוצע', '', 'info')
-                } */
-            })
         });
 
+        $(document).on('change', '#id_expense', function (e){
+            let a = $('#id_expense').val();
+            if(a=='999999'){
+                $("#id_expenseother").show();
+            }else{
+                $("#id_expenseother").val('').hide();
+            }
+        }).change();
+
+
+        function urlParam(url ,id_line){
+            url = url.replace('p1', _param_url['id_entrep'] ).replace('p2', _param_url['id_proj'] ).replace('p3', _param_url['id_city'] )
+            if(id_line!= undefined ){
+                url += "/" + id_line;
+            }
+            return url;
+        }
 
         function InitPage(){
 
             myRowTable=null;
             $("#id_line").val('0');
+            $("#id_proj").val('1').change();
+            $("#asmctaexpense").val('');
+            //$("#").val('');
 
-            $("#nameclient").val('');
+            $("#id_expense").val('999999').change();
+            $("#id_expenseother").val('');
             $("#amount").val('');
-            $("#id_curn").val('1');
             $("#id_titletwo").val('3');
-            $("#id_incom").val('0');
-            $("#kabala").val('');
-            $("#nameovid").val('');
-            $("#phone").val('');
-            $("#son").prop('checked', false);
+            $("#numinvoice").val('');
+            $("#dateinvoice").val('');
             $("#note").val('');
 
             let today = new Date();
@@ -277,8 +279,12 @@
             if (mm < 10) mm = '0' + mm;
 
             const formattedToday =  yyyy + '-' + mm + '-' + dd;
-            $("#kabladat").val(formattedToday);
+            $("#dateexpense").val(formattedToday);
+
+            $(".ramdan").hide();
+            //$("#id_expenseother").hide();
         }
+
 
     </script>
 

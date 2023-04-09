@@ -6,6 +6,7 @@
 
     <style>
 
+
     </style>
 @endsection
 
@@ -32,10 +33,14 @@
                 @csrf
                 <div class="form-row align-items-center">
 
-                    {{--                    <div class="col-auto">--}}
-                    {{--                        <label for="dateincome">تاريخ التبرع</label>--}}
-                    {{--                        <input class="form-control mb-2" name="dateincome" id="dateincome" type="date" >--}}
-                    {{--                    </div>--}}
+                    <div class="col-auto">
+                        <label for="id_proj">المشروع</label>
+                        <select name="id_proj" id="id_proj" class="custom-select custom-select-sm">
+                            @foreach($projects as $item)
+                                <option value="{{$item['id']}}">{{$item['name']}} </option>
+                            @endforeach
+                        </select>
+                    </div>
 
                     <div class="col-auto">
                         <label for="nameclient">اسم المتبرع</label>
@@ -69,10 +74,10 @@
                     <div class="col-auto">
                         <label for="id_incom">نوع التبرع</label>
                         <select name="id_incom" id="id_incom" class="custom-select custom-select-sm">
-                            <option value="0">اختر النوع</option>
-                            @foreach($income as $item)
+
+                            {{--@foreach($income as $item)
                                 <option value="{{$item['id']}}">{{$item['name']}}</option>
-                            @endforeach
+                            @endforeach--}}
                         </select>
                     </div>
 
@@ -165,7 +170,7 @@
                         <thead>
                         <tr>
                             <th>تاريخ</th>
-                            <th>المشروع</th>
+                            <th>مشروع</th>
                             <th>اسم المتبرع</th>
                             <th>مبلغ</th>
                             <th>طريقة الدفع</th>
@@ -199,7 +204,7 @@
 @section('page-script')
 
     <script src="{{ asset('angle/vendor/sweetalert2/dist/sweetalert2.all.min.js') }}"></script><!-- SWEET ALERT-->
-    @include( "scripts.usb.income" )
+    @include( "scripts.usb.incomeentrep" )
 
     {{--
     @include('layout.includes.linedetailedit')

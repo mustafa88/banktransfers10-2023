@@ -57,17 +57,18 @@ class IncomeController extends Controller
         return redirect()->back()->with("success", "تم الحفظ بنجاح");
     }
 
-    public function storeOLD(IncomeRequset $requset, $id){
-        $project = Projects::find($id);
-        if (!$project) {
-            return abort('404');
-        }
+    /**
+     * @return void
+     * מחזיר כל סוגי ההכנסות ל]רויקט מסויים
+     */
+    public function getByProjects($id_proj){
 
-        $arrDate = [
-            'id_projects' => $id,
-            'name' => $requset->name,
-        ];
-        Income::create($arrDate);
-        return redirect()->back()->with("success", "تم الحفظ بنجاح");
+        $income = Income::whereHas('projects', function($q) use ($id_proj){
+            $q->where('projects.id', $id_proj)->where('inactive','0');
+
+        })->get();
+
+        return $income;
+
     }
 }

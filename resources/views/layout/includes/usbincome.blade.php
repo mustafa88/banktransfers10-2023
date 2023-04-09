@@ -6,6 +6,8 @@
     <td>{{$rowData['income']['name']}}</td>
     <td>{{$rowData['kabala']}}</td>
     <td>{{$rowData['kabladat']}}</td>
+    <td>{{$rowData['phone']}}</td>
+    <td>@if(!is_null($rowData['son']) and $rowData['son']=='1')نعم @else لا @endif</td>
     <td>{{$rowData['nameovid']}}</td>
     <td>{{$rowData['note']}}</td>
 

@@ -19,6 +19,7 @@ use App\Http\Controllers\Bank\DonateworthController;
 use App\Http\Controllers\Bank\DonateTypeController;
 use App\Http\Controllers\Usb\UsbIncomeController;
 use App\Http\Controllers\Usb\UsbExpenseController;
+use App\Http\Controllers\Bank\ExportImportController;
     /*middleware
     |--------------------------------------------------------------------------
     | Web Routes
@@ -46,7 +47,14 @@ use App\Http\Controllers\Usb\UsbExpenseController;
  * php artisan make:model Usb/Usbexpense
  * php artisan make:controller Usb/UsbExpenseController --resource
  * php artisan make:request Usb/UsbExpenseRequest
+ *
+ * php artisan make:controller Usb/ExportImportController
  */
+
+/**
+ * https://css-tricks.com/simple-css-row-column-highlighting/
+ */
+
 /**
 Route::get('/', function () {
     return view('welcome');
@@ -132,6 +140,11 @@ Route::group(['prefix' => 'managetable/expense_income', 'namespace' => 'Bank', '
     Route::get('show', [ExpenseController::class ,'showExpenseAndIncome'])->name('table.expense_income.show');
     Route::post('storeexpense', [ExpenseController::class ,'store'])->name('table.expense.store');
     Route::post('storeincome', [IncomeController::class ,'store'])->name('table.income.store');
+    //מחזיר כל סוגי תרומה לפרויקט מסויים
+    Route::get('income_by_project/{id_proj?}', [IncomeController::class ,'getByProjects'])->name('table.incomebyproject.store');
+
+    //מחזיר כל שמות ספקים לפרויקט מסויים
+    Route::get('expense_by_project/{id_proj?}', [ExpenseController::class ,'getByProjects'])->name('table.expensebyproject.store');
 });
 
 Route::group(['prefix' => 'managetable/campaigns', 'namespace' => 'Bank', 'middleware' => ['web']], function () {
@@ -199,52 +212,58 @@ Route::group(['prefix' => 'managebanks/csvbanks', 'namespace' => 'Bank', 'middle
     //העלאת קובץ CSV
     Route::post('storecsv', [BanksController::class, 'storeFileCsv'])->name('banks.storeFileCsv');
 });
-/**
-Route::group(['prefix' => 'donate', 'namespace' => 'Bank', 'middleware' => ['web']], function () {
-    //מסך ראשי - תרומה בשווה
-    Route::get('maindonate', [DonateworthController::class,'mainDonateOLD'])->name('mainDonate.show');
-    //INSERT
-    Route::post('store', [DonateworthController::class, 'storeAjax'])->name('mainDonate.storeajax');
-    //EDIT
-    Route::get('store/{id_donate?}', [DonateworthController::class, 'editAjax'])->name('mainDonate.editajax');
-    //UPDATE
-    Route::put('store/{id_donate?}', [DonateworthController::class, 'updateAjax'])->name('mainDonate.updateajax');
-    //DELETE
-    Route::delete('delete/{id_donate?}', [DonateworthController::class, 'deleteAjax'])->name('mainDonate.deleteajax');
+
+
+Route::group(['prefix' => 'usb/report/{id_entrep?}', 'namespace' => 'Usb', 'middleware' => ['web']], function () {
+    //USB דוח סיכום להכנסות/הוצאות לעמותה
+    Route::get('show', [UsbIncomeController::class ,'showReport'])->name('usb_report.show');
 
 });
-**/
 
-Route::group(['prefix' => 'usb_income/{id_entrep}/{id_proj}/{id_city}', 'namespace' => 'Usb', 'middleware' => ['web']], function () {
 
+Route::group(['prefix' => 'usb_income_entrep/{id_entrep}/{id_city}', 'namespace' => 'Usb', 'middleware' => ['web']], function () {
+    //תיעוד הכנסות - USB - בחירת פרויקט
+    Route::get('show', [UsbIncomeController::class ,'index_entrep'])->name('usb_income_entrep.show');
+
+});
+
+Route::group(['prefix' => 'usb_income/{id_entrep?}/{id_proj?}/{id_city?}', 'namespace' => 'Usb', 'middleware' => ['web']], function () {
+    //תיעוד הכנסות - USB
     Route::get('show', [UsbIncomeController::class ,'index'])->name('usb_income.show');
     //INSERT
      Route::post('store', [UsbIncomeController::class, 'storeAjax'])->name('usb_income.storeajax');
     //EDIT
     Route::get('store/{uuid_usbincome?}', [UsbIncomeController::class, 'editAjax'])->name('usb_income.editajax');
     //UPDATE
-    Route::put('store/{uuid_usbincome?}', [UsbIncomeController::class, 'updateajax'])->name('usb_income.updateajax');
+    Route::put('update/{uuid_usbincome?}', [UsbIncomeController::class, 'updateajax'])->name('usb_income.updateajax');
     //DELETE
     Route::delete('delete/{uuid_usbincome?}', [UsbIncomeController::class, 'deleteAjax'])->name('usb_income.deleteajax');
     //report - סיכום
-    Route::get('showreport/{FromDate?}/{ToDate?}', [UsbIncomeController::class ,'showReport'])->name('usb_income.show.report');
+    //Route::get('showreport/{FromDate?}/{ToDate?}', [UsbIncomeController::class ,'showReport'])->name('usb_income.show.report');
+
+
+});
+
+Route::group(['prefix' => 'usb_expense_entrep/{id_entrep}/{id_city}', 'namespace' => 'Usb', 'middleware' => ['web']], function () {
+    //תיעוד הכנסות - USB - בחירת פרויקט
+    Route::get('show', [UsbExpenseController::class ,'index_entrep'])->name('usb_expense_entrep.show');
 
 });
 
 
-Route::group(['prefix' => 'usb_expense/{id_entrep}/{id_proj}/{id_city}', 'namespace' => 'Usb', 'middleware' => ['web']], function () {
-
+Route::group(['prefix' => 'usb_expense/{id_entrep?}/{id_proj?}/{id_city?}', 'namespace' => 'Usb', 'middleware' => ['web']], function () {
+    //תיעוד הוצאות - USB
     Route::get('show', [UsbExpenseController::class ,'index'])->name('usb_expense.show');
     //INSERT
     Route::post('store', [UsbExpenseController::class, 'storeAjax'])->name('usb_expense.storeajax');
     //EDIT
     Route::get('store/{uuid_usbexpense?}', [UsbExpenseController::class, 'editAjax'])->name('usb_expense.editajax');
     //UPDATE
-    Route::put('store/{uuid_usbexpense?}', [UsbExpenseController::class, 'updateajax'])->name('usb_expense.updateajax');
+    Route::put('update/{uuid_usbexpense?}', [UsbExpenseController::class, 'updateajax'])->name('usb_expense.updateajax');
     //DELETE
     Route::delete('delete/{uuid_usbexpense?}', [UsbExpenseController::class, 'deleteAjax'])->name('usb_expense.deleteajax');
     //report - סיכום
-    Route::get('showreport/{FromDate?}/{ToDate?}', [UsbExpenseController::class ,'showReport'])->name('usb_expense.show.report');
+    //Route::get('showreport/{FromDate?}/{ToDate?}', [UsbExpenseController::class ,'showReport'])->name('usb_expense.show.report');
 
 });
 
@@ -266,16 +285,27 @@ Route::group(['prefix' => 'donate/{id_entrep}/{id_proj}/{id_city}', 'namespace' 
 
 });
 
+Route::group(['prefix' =>'export_import' , 'namespace' => 'Bank', 'middleware' => ['web']], function () {
+    //יבוא ויצאי קבצים
+    Route::get('main', [ExportImportController::class,'mainDonateExportImport'])->name('export_import');
+    //הודת קובץ
+    Route::post('export', [ExportImportController::class,'mainExport'])->name('export_import.export');
+    //העלאת קובץ CSV
+    Route::post('import', [ExportImportController::class, 'mainImport'])->name('export_import.import');
+});
+
+/**
+ *לא עובד - הועבר לשיטיה חדשה -הכל במסך אחד
+ *
 Route::group(['prefix' => 'donate/export_import', 'namespace' => 'Bank', 'middleware' => ['web']], function () {
     //יבוא ויצאי קבצי תרומב בשווי
-
     Route::get('maindonate', [DonateworthController::class,'mainDonateExportImport'])->name('mainDonate.exportimport');
     //הודת קובץ תרומה בשווה
     Route::post('exportfile', [DonateworthController::class,'mainDonateExport'])->name('mainDonate.export');
-    //העלאת קובץ CSV
+    //העלאת קובץ
     Route::post('importfile', [DonateworthController::class, 'mainDonateImport'])->name('mainDonate.import');
 });
-
+**/
 
 Route::group(['prefix' => 'managebanks/linebanks', 'namespace' => 'Bank', 'middleware' => ['web']], function () {
     //תנועות בחשבון - שורות בנק

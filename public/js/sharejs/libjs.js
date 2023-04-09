@@ -1,5 +1,15 @@
 /**
  *
+ */
+function animationNewElement(thisElement){
+    $(thisElement).addClass('add-animation');
+    setTimeout(() => {
+        $(thisElement).removeClass('add-animation');
+    }, 2000);
+}
+
+/**
+ *
  * @param msg
  * @param style
  */

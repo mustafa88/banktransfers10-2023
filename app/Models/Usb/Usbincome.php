@@ -11,18 +11,20 @@ use App\Models\Bank\Title_two;
 use App\Models\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Usbincome extends Model
 {
-    use HasFactory ,HasUuid;
+    use HasFactory ,HasUuid ,SoftDeletes;
     protected  $table = 'Usbincome';
     protected $fillable = ['uuid_usb','dateincome','id_enter','id_proj','id_city',
-        'id_incom','amount','id_curn','id_titletwo','nameclient','kabala','kabladat','nameovid','note','created_at','updated_at'];
+        'id_incom','amount','id_curn','id_titletwo','nameclient','kabala','kabladat','phone','son','nameovid','note','deleted_at','created_at','updated_at'];
     protected $hidden = [];
     protected $primaryKey = 'uuid_usb';
     //protected $keyType = 'string';
     //public $incrementing = false;
     public $timestamps = true;
+    protected $dates = ['deleted_at'];
 
 
     public function enterprise(){
