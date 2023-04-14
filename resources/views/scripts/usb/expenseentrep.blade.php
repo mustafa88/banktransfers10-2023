@@ -76,7 +76,7 @@
                 let thisRow = myTable.row.add($(resultAjax['rowHtml'])[0]).draw().node();
                 //console.log(xxx);
                 //$(xxx.node()).addClass('add-animation');
-                animationNewElement(thisRow);
+                //animationNewElement(thisRow);
             }else{
                 //return;
                 //update
@@ -105,7 +105,7 @@
                 myTable.draw();
                 let thisRow = row.node();
 
-                animationNewElement(thisRow);
+                //animationNewElement(thisRow);
                 /**
                 $(thisRow).addClass('add-animation');
                 setTimeout(() => {

@@ -78,7 +78,7 @@
                 //console.log(newRow.node());
                 //console.log($(newRow).find('tr'));
                 //console.log($(newRow.node()).find('td'));
-                animationNewElement(thisRow);
+                //animationNewElement(thisRow);
             }else{
                 //return;
                 //update
@@ -106,7 +106,7 @@
                 }
                 myTable.draw();
                 let thisRow = row.node();
-                animationNewElement(thisRow);
+                //animationNewElement(thisRow);
                 //let thisRow = row.node();
                 //$(thisRow).find('td').eq(1).css("background-color",newData['color_code']);
 
