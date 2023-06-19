@@ -18,6 +18,48 @@
                     [25, 50, 100, 200, -1],
                     [25, 50, 100, 200, "All"]
                 ],
+                /**
+                columnDefs: [
+                    {
+                        targets: 5,
+                        //render: $.fn.dataTable.render.number(',', '.', 3, '')
+                    }
+                ],
+                columnDefs: [
+                    {
+                targets: 5,
+                render: function (data, type, row) {
+                    if (type === 'sort') {
+
+                         //https://datatables.net/forums/discussion/53184/sorting-number-with-text
+                        // Use jQuery to extract text from HTML element
+                        //let content = $(data).text().split(' ');
+                        // Expected result: ["15.62", "KH/s"]
+                        // if (content && content.length === 2) {
+                        //     let prefix = '0';  // If no match sort this to the top
+                        //     let hr = content[1]; //Hash Rate "KH/s"
+                        //     if (hr === 'MH/s') {
+                        //         prefix = '1';
+                        //     } else if (hr === 'KH/s') {
+                        //         prefix = '2';
+                        //     } else if (hr === 'H/s') {
+                        //         prefix = '3';
+                        //     }
+                        //     return prefix + content[0].padStart(7, '0');
+                        //     // Example: 20015.62
+                        // }
+
+                        console.log(row)
+                        return (data.substring(1));
+                    }
+                    //console.log(data.substring(1))
+                    //return (data.substring(1));
+                    return data;
+                },
+                    }
+                ],
+                 **/
+
                 iDisplayLength: -1
             });
 
@@ -42,11 +84,34 @@
             _param_url['id_proj']= $('#id_proj').val();
 
         }).change();
+
+        $('#kabala').on( 'change', function () {
+            //להציג קבלות לאותו מס קבלה
+            $("#listkabala").hide();
+            $("#listkabalabody").html('');
+            if($(this).val()==''){
+                return ;
+            }
+            let url= '{{route('usb_income.showKabala',['p1','p2','p3'])}}';
+            url = urlParam(url);
+            let resultAjax = SendToAjax(url,'GET');
+
+            if(!resultAjax['status']){
+                return false;c
+            }
+            let row = resultAjax['row'];
+            console.log(row)
+            $("#listkabala").show();
+            for(let i=0;i<row.length;i++){
+                $('#listkabalabody').append(`<tr><td>${row[i]['dateincome']}</td><td>${row[i]['nameclient']}</td><td>${row[i]['amount']}${row[i]['currency']['symbol']}</td><td>${row[i]['income']['name']}</td></tr>`);
+            }
+
+        });
         /**
          * שמירה
          * save new data or update data exists
          */
-        $('#btn_save').on( 'click', function () {
+        $('#btn_save ,#btn_save_again').on( 'click', function (a,b,c) {
 
             let id_line = $("#id_line").val();
 
@@ -112,8 +177,11 @@
 
 
             }
-
-            InitPage();
+            let customRest = false;
+            if($(this).attr('id')=='btn_save_again'){
+                customRest = true;
+            }
+            InitPage(customRest);
         });
 
         $(document).on('click', 'a.edit_row', function (e) {
@@ -145,7 +213,7 @@
             $("#id_curn").val(row.id_curn);
             $("#id_titletwo").val(row.id_titletwo);
             $("#id_incom").val(row.id_incom);
-            $("#kabala").val(row.kabala);
+            $("#kabala").val(row.kabala).change();
             $("#nameovid").val(row.nameovid);
             $("#note").val(row.note);
             $("#kabladat").val(row.kabladat);
@@ -228,7 +296,7 @@
             url = urlParam(url);
             url += "?fromDate=" + fdate + "&toDate=" + tdate;
 
-            alert(url);
+            //alert(url);
             window.location.href = url;
         });
 
@@ -243,23 +311,29 @@
 
 
 
-        function InitPage(){
+        function InitPage(customRest){
 
             myRowTable=null;
             $("#id_line").val('0');
 
+            $('#kabala').change();
+
+            if(customRest==true){
+                $("#amount").val('');
+                return;
+            }
             $("#id_proj").val('1').change();
             $("#nameclient").val('');
-            $("#amount").val('');
+            $("#amount").val('');//
             $("#id_curn").val('1');
             $("#id_titletwo").val('3');
             //$("#id_incom").val('0');
-            $("#kabala").val('');
-            $("#nameovid").val('');
+            $("#kabala").val('').change();
+
             $("#phone").val('');
             $("#son").prop('checked', false);
             $("#note").val('');
-
+            //$("#nameovid").val('');
             let today = new Date();
             let yyyy = today.getFullYear();
             let mm = today.getMonth() + 1; // Months start at 0!

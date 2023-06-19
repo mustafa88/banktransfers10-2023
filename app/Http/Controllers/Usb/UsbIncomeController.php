@@ -86,6 +86,7 @@ class UsbIncomeController extends Controller
             );
     }
 
+
     public function index_entrep(Request $request, $id_entrep, $id_city)
     {
         if ($request->fromDate != null and $request->toDate != null) {
@@ -126,7 +127,7 @@ class UsbIncomeController extends Controller
          **/
         $title_two = Title_two::Where('ttwo_one_id', 1)->get();
 
-
+        //return $showLineFromDate;
         $usbincome = Usbincome::with(['enterprise', 'projects', 'city', 'income', 'currency', 'titletwo'])
             ->where('dateincome', '>=', $showLineFromDate)
             ->where('dateincome', '<=', $showLineToDate)
@@ -153,7 +154,7 @@ class UsbIncomeController extends Controller
             );
     }
 
-    public function showReport(Request $request, $id_entrep)
+    public function showReport(Request $request, $id_entrep=null)
     {
 
         if ($request->fromDate != null and $request->toDate != null) {
@@ -172,7 +173,12 @@ class UsbIncomeController extends Controller
         $showLineFromDate = $request->session()->get('showLineFromDate');
         $showLineToDate = $request->session()->get('showLineToDate');
 
-        $a_title = Enterprise::find($id_entrep)->name ;
+        $a_title="";
+        if($id_entrep!=null){
+            $a_title = Enterprise::find($id_entrep)->name ;
+        }
+
+        $enterprise_arr =  Enterprise::get();
 
         $allCity = Usbincome::select('Usbincome.id_city', 'city.city_name')
             ->distinct()
@@ -292,7 +298,7 @@ class UsbIncomeController extends Controller
 
 
         //return $income_title_curr;
-        return view('usb.income_expense_Report', compact('allCity'
+        return view('usb.income_expense_Report', compact('id_entrep','enterprise_arr','allCity'
             ,'income_title_curr','income_typeincom_curr'
             ,'income_proj_typeincom_curr','income_title_typeincom_curr'
             ,'expense_title','expense_proj_title')
@@ -306,6 +312,118 @@ class UsbIncomeController extends Controller
 
     }
 
+
+    /**
+     * @param Request $request
+     * @param $id_entrep
+     * @param $id_proj
+     * @param $id_city
+     * @return array
+     * מחיזר קבלות עם אותו מספר שנרשמו לאותה עמודה אותו עיר
+     */
+    public function showKabala(Request $request, $id_entrep, $id_proj, $id_city){
+
+        $rowCheck = Usbincome::with(['enterprise', 'projects', 'city', 'income', 'currency', 'titletwo'])
+            ->where('id_enter',$id_entrep )
+            ->where('id_proj',$id_proj )
+            ->where('id_city',$id_city)
+            ->where('kabala',$request->kabala )
+            //->where('uuid_usb',"!=",$request->id_line)
+            ->get();
+        if ($rowCheck->isNotEmpty()) {
+            $resultArr['status'] = true;
+            $resultArr['row'] = $rowCheck;
+            return $resultArr;
+        }
+        $resultArr['status'] = false;
+        return $resultArr;
+    }
+
+    /**
+     * @param $arrDate
+     * @return array
+     */
+    private function checkBeforeSave($arrDate){
+        $resultArr = [];
+        if(!isset($arrDate['uuid_usb'])){
+            $arrDate['uuid_usb'] ='0';
+        }
+        if($arrDate['id_enter']=='1' and $arrDate['id_proj']=='2'){
+            //عطاء المريض - جمعية بحد ذاتها
+            $rowCheckOther_CityProj = Usbincome::where('id_enter',$arrDate['id_enter'] )
+                ->where('id_proj',$arrDate['id_proj'] )
+                ->where('kabala',$arrDate['kabala'] )
+                ->where('id_city',"!=",$arrDate['id_city'])
+                ->where('uuid_usb',"!=",$arrDate['uuid_usb'])
+                ->get();
+
+            if ($rowCheckOther_CityProj->isNotEmpty()) {
+                $resultArr['status'] = false;
+                $resultArr['cls'] = 'error';
+                $resultArr['msg'] = 'فد تم استخدام رقم الوصل لبلد اخر';
+                return $resultArr;
+            }
+
+
+            //בדיקת אם קיים מלפני לפי: עמותה + פרויקט +  מס קבלה + סוג תרומה + סוג מטביע
+            $rowCheckExists = Usbincome::
+            where('id_enter',$arrDate['id_enter'] )
+                ->where('id_proj',$arrDate['id_proj'] )
+                ->where('kabala',$arrDate['kabala'] )
+                ->where('id_incom',$arrDate['id_incom'] )
+                ->where('id_curn',$arrDate['id_curn'] )
+                ->where('uuid_usb',"!=",$arrDate['uuid_usb'])
+                ->get();
+
+            if ($rowCheckExists->isNotEmpty()) {
+                $resultArr['status'] = false;
+                $resultArr['cls'] = 'error';
+                $resultArr['msg'] = 'فد تم ادخال مثل هذه المعلومات من قبل' ;
+                return $resultArr;
+            }
+
+
+        }else{
+
+            $rowCheckOther_CityProj = Usbincome::where('id_enter',$arrDate['id_enter'] )
+                ->where('kabala',$arrDate['kabala'] )
+                ->where(function ($query) use ($arrDate) {
+                    $query->where('id_proj',"!=",$arrDate['id_proj'])
+                    ->orwhere('id_city',"!=",$arrDate['id_city']);
+                })
+                ->where('uuid_usb',"!=",$arrDate['uuid_usb'])
+                ->get();
+
+            if ($rowCheckOther_CityProj->isNotEmpty()) {
+                $resultArr['status'] = false;
+                $resultArr['cls'] = 'error';
+                $resultArr['msg'] = 'فد تم استخدام رقم الوصل لمشروع اخر او بلد اخر';
+                return $resultArr;
+            }
+
+
+            //בדיקת אם קיים מלפני לפי: עמותה + פרויקט +  מס קבלה + סוג תרומה + סוג מטביע
+            $rowCheckExists = Usbincome::
+            where('id_enter',$arrDate['id_enter'] )
+                ->where('id_proj',$arrDate['id_proj'] )
+                ->where('kabala',$arrDate['kabala'] )
+                ->where('id_incom',$arrDate['id_incom'] )
+                ->where('id_curn',$arrDate['id_curn'] )
+                ->where('uuid_usb',"!=",$arrDate['uuid_usb'])
+                ->get();
+
+            if ($rowCheckExists->isNotEmpty()) {
+                $resultArr['status'] = false;
+                $resultArr['cls'] = 'error';
+                $resultArr['msg'] = 'فد تم ادخال مثل هذه المعلومات من قبل' ;
+                return $resultArr;
+            }
+
+        }
+
+        $resultArr['status'] = true;
+        return $resultArr;
+    }
     /**
      * Store a newly created resource in storage.
      *
@@ -356,6 +474,11 @@ class UsbIncomeController extends Controller
                 'nameovid' => $request->nameovid,
                 'note' => $request->note,
             ];
+
+            $resultCheck = $this->checkBeforeSave($arrDate);
+            if(!$resultCheck['status']){
+                return $resultCheck;
+            }
 
             $rowinsert = Usbincome::create($arrDate);
 
@@ -442,6 +565,11 @@ class UsbIncomeController extends Controller
                 $son = '1';
             }
             $rowUsbincome->son = $son;
+
+            $resultCheck = $this->checkBeforeSave($rowUsbincome);
+            if(!$resultCheck['status']){
+                return $resultCheck;
+            }
 
             $rowUsbincome->save();
 

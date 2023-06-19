@@ -41,16 +41,6 @@
                     </div>
 
                     <div class="col-auto">
-                        <label for="dateexpense">تاريخ الدفع</label>
-                        <input class="form-control mb-2" name="dateexpense" id="dateexpense" type="date">
-                    </div>
-
-                    <div class="col-auto ramdan">
-                        <label for="asmctaexpense">אסמכתא</label>
-                        <input class="form-control mb-2" name='asmctaexpense' id="asmctaexpense" type="number">
-                    </div>
-
-                    <div class="col-auto">
                         <label for="id_expense">مورد</label>
                         <select name="id_expense" id="id_expense" class="custom-select custom-select-sm">
                             {{--
@@ -61,21 +51,16 @@
                             @endforeach
                             --}}
                         </select>
-                        <input class="form-control mb-2" name="id_expenseother" id="id_expenseother" type="text" placeholder="صاحب خط التوزيع">
+                        <input class="form-control mb-2" name="id_expenseother" id="id_expenseother" type="text" placeholder="مورد او صاحب خط التوزيع">
                     </div>
+
+
+
+
 
                     <div class="col-auto">
                         <label for="amount">المبلغ</label>
                         <input class="form-control mb-2" name='amount' id="amount" type="number">
-                    </div>
-
-                    <div class="col-auto ramdan">
-                        <label for="id_titletwo">طريقة الدفع</label>
-                        <select name="id_titletwo" id="id_titletwo" class="custom-select custom-select-sm">
-                            @foreach($title_two as $item)
-                                <option value="{{$item['ttwo_id']}}">{{$item['ttwo_text']}}</option>
-                            @endforeach
-                        </select>
                     </div>
 
                     <div class="col-auto ramdan">
@@ -87,10 +72,48 @@
                         <label for="dateinvoice">تاريخ الفاتورة</label>
                         <input class="form-control mb-2" name="dateinvoice" id="dateinvoice" type="date">
                     </div>
+
+
+
                     <div class="col-auto">
                         <label for="note">ملاحظة</label>
                         <input class="form-control mb-6" name='note' id="note" type="text">
                     </div>
+
+                </div>
+
+                <div class="form-row align-items-center">
+                    <div class="col-auto">
+                        <div class=" d-flex align-items-center bg-green justify-content-center ">
+                            <div class="text-center">
+
+                                <div class="h4" >تفاصيل </div>
+                                <div class="h4" >الدفع</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-auto ramdan">
+                        <label for="id_titletwo">طريقة الدفع</label>
+                        <select name="id_titletwo" id="id_titletwo" class="custom-select custom-select-sm">
+                            <option value="">اختر</option>
+                            @foreach($title_two as $item)
+                                <option value="{{$item['ttwo_id']}}">{{$item['ttwo_text']}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+
+                    <div class="col-auto">
+                        <label for="dateexpense">تاريخ الدفع</label>
+                        <input class="form-control mb-2" name="dateexpense" id="dateexpense" type="date">
+                    </div>
+
+                    <div class="col-auto ramdan">
+                        <label for="asmctaexpense">رقم الاسمختا - מס צק, מס העברה וכו</label>
+                        <input class="form-control mb-2" name='asmctaexpense' id="asmctaexpense" type="number">
+                    </div>
+
 
                 </div>
 
@@ -151,14 +174,17 @@
                     <table class="table table-striped my-4 w-100 hover" id="datatable1">
                         <thead>
                         <tr>
-                            <th>تاريخ</th>
+
                             <th>مشروع</th>
-                            {{--<th>אסמכתא <br>מס צק, מס העברה וכו</th>--}}
                             <th>المورد/شخص</th>
                             <th>مبلغ</th>
+                            <th>رقم الفاتوره</th>
+                            <th>تاريخ الفاتورة</th>
+
                             <th>طريقة الدفع</th>
-                            {{--<th>رقم الفاتوره</th>
-                            <th>تاريخ الفاتورة</th>--}}
+                            <th>تاريخ الدفع</th>
+                            <th>אסמכתא <br>מס צק, מס העברה וכו</th>
+
                             <th>ملاحظه</th>
                             <th>פעולה</th>
                         </tr>

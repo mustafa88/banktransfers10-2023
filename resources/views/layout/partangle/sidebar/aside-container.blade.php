@@ -53,6 +53,8 @@
                         <li class=" "><a href="{{route('reports.banksearch.new')}}" title="تقارير بنكية"><span>تقارير بنكية</span></a></li>
                         <li class=" "><a href="{{route('reports.projsearch')}}" title="تقارير مشاريع"><span>تقارير مشاريع</span></a></li>
                         <li class=" "><a href="{{route('reports.finalall')}}" title="تقرير شامل"><span>تقرير شامل</span></a></li>
+                        <li class=" "><a href="{{route('usb_report.show')}}" title="تقرير مدخولات / مصروغات"><span>تقرير مدخولات / مصروغات</span></a></li>
+                        <li class=" "><a href="{{route('adahi_report.show')}}" title="تقرير مشروع الاضاحي"><span>تقرير مشروع الاضاحي</span></a></li>
                         <li class=" "><a href="#" title="تقارير تبرعات عينية"><span>تقارير تبرعات عينية</span></a></li>
                     </ul>
                 </li>
@@ -237,6 +239,35 @@
                             </li>
                         @endforeach
                         --}}
+                    </ul>
+                </li>
+
+                <li class=" "><a href="#li_adahi" title="Tables" data-toggle="collapse"><em class="icon-grid"></em><span >مشروع الاضاحي</span></a>
+
+                    <ul class="sidebar-nav sidebar-subnav collapse" id="li_adahi">
+                        <li class="sidebar-subnav-header">مشروع الاضاحي</li>
+
+                        <li class=" ">
+                            <a href="{{route('adahi.show',['id_city'=>'2'])}}"
+                               title="الطيبة" aria-expanded="true" >
+                                <span>عطاء -->  الطيبة</span>
+                            </a>
+                        </li>
+
+                        <li class=" ">
+                            <a href="{{route('adahi.show',['id_city'=>'3'])}}"
+                               title="الطيبة" aria-expanded="true" >
+                                <span>عطاء -->  قلنسوة</span>
+                            </a>
+                        </li>
+
+                        <li class=" ">
+                            <a href="{{route('adahi.show',['id_city'=>'4'])}}"
+                               title="الطيبة" aria-expanded="true" >
+                                <span>عطاء -->  الطيرة</span>
+                            </a>
+                        </li>
+
                     </ul>
                 </li>
 

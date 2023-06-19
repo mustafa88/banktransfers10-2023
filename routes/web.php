@@ -20,6 +20,7 @@ use App\Http\Controllers\Bank\DonateTypeController;
 use App\Http\Controllers\Usb\UsbIncomeController;
 use App\Http\Controllers\Usb\UsbExpenseController;
 use App\Http\Controllers\Bank\ExportImportController;
+use App\Http\Controllers\Usb\AdahiController;
     /*middleware
     |--------------------------------------------------------------------------
     | Web Routes
@@ -208,17 +209,21 @@ Route::group(['prefix' => 'managebanks/listbanks', 'namespace' => 'Bank', 'middl
 
 Route::group(['prefix' => 'managebanks/csvbanks', 'namespace' => 'Bank', 'middleware' => ['web']], function () {
     //מסך ראשי להעלאה קובץ CSV לבנק
-    Route::get('storecsv', [BanksController::class, 'mainLoadCsv'])->name('banks.mainLoadCsv');
+    Route::get('storecsv', [BanksContrusb_expense_entrepoller::class, 'mainLoadCsv'])->name('banks.mainLoadCsv');
     //העלאת קובץ CSV
     Route::post('storecsv', [BanksController::class, 'storeFileCsv'])->name('banks.storeFileCsv');
 });
 
 
-Route::group(['prefix' => 'usb/report/{id_entrep?}', 'namespace' => 'Usb', 'middleware' => ['web']], function () {
+Route::group(['prefix' => 'usb/report', 'namespace' => 'Usb', 'middleware' => ['web']], function () {
     //USB דוח סיכום להכנסות/הוצאות לעמותה
-    Route::get('show', [UsbIncomeController::class ,'showReport'])->name('usb_report.show');
+    Route::get('show/{id_entrep?}', [UsbIncomeController::class ,'showReport'])->name('usb_report.show');
 
 });
+
+
+
+
 
 
 Route::group(['prefix' => 'usb_income_entrep/{id_entrep}/{id_city}', 'namespace' => 'Usb', 'middleware' => ['web']], function () {
@@ -231,7 +236,7 @@ Route::group(['prefix' => 'usb_income/{id_entrep?}/{id_proj?}/{id_city?}', 'name
     //תיעוד הכנסות - USB
     Route::get('show', [UsbIncomeController::class ,'index'])->name('usb_income.show');
     //INSERT
-     Route::post('store', [UsbIncomeController::class, 'storeAjax'])->name('usb_income.storeajax');
+    Route::post('store', [UsbIncomeController::class, 'storeAjax'])->name('usb_income.storeajax');
     //EDIT
     Route::get('store/{uuid_usbincome?}', [UsbIncomeController::class, 'editAjax'])->name('usb_income.editajax');
     //UPDATE
@@ -241,11 +246,14 @@ Route::group(['prefix' => 'usb_income/{id_entrep?}/{id_proj?}/{id_city?}', 'name
     //report - סיכום
     //Route::get('showreport/{FromDate?}/{ToDate?}', [UsbIncomeController::class ,'showReport'])->name('usb_income.show.report');
 
+    //תיעוד הכנסות - USB
+    Route::get('showKabala', [UsbIncomeController::class ,'showKabala'])->name('usb_income.showKabala');
+
 
 });
 
 Route::group(['prefix' => 'usb_expense_entrep/{id_entrep}/{id_city}', 'namespace' => 'Usb', 'middleware' => ['web']], function () {
-    //תיעוד הכנסות - USB - בחירת פרויקט
+    //תיעוד הוצאות - USB - בחירת פרויקט
     Route::get('show', [UsbExpenseController::class ,'index_entrep'])->name('usb_expense_entrep.show');
 
 });
@@ -282,6 +290,30 @@ Route::group(['prefix' => 'donate/{id_entrep}/{id_proj}/{id_city}', 'namespace' 
     Route::put('store/{id_donate?}', [DonateworthController::class, 'updateAjax'])->name('mainDonate.updateajax');
     //DELETE
     Route::delete('delete/{id_donate?}', [DonateworthController::class, 'deleteAjax'])->name('mainDonate.deleteajax');
+
+});
+
+
+Route::group(['prefix' => 'editadahi/{id_city?}', 'namespace' => 'Usb', 'middleware' => ['web']], function () {
+    //תיעוד הוצאות - USB
+    Route::get('show', [AdahiController::class ,'index'])->name('adahi.show');
+    //INSERT
+    Route::post('store', [AdahiController::class, 'storeAjax'])->name('adahi.storeajax');
+    //EDIT
+     Route::get('store/{uuid_adahi?}', [AdahiController::class, 'editAjax'])->name('adahi.editajax');
+    //UPDATE
+    Route::put('update/{uuid_adahi?}', [AdahiController::class, 'updateAjax'])->name('adahi.updateajax');
+    //DELETE
+    Route::delete('delete/{uuid_adahi?}', [AdahiController::class, 'deleteAjax'])->name('adahi.deleteajax');
+    //report - סיכום
+     Route::get('showreport/{FromDate?}/{ToDate?}', [AdahiController::class ,'showReport'])->name('adahi.show.report');
+    //UsbExpenseController
+
+});
+
+Route::group(['prefix' => 'adahi/report', 'namespace' => 'Usb', 'middleware' => ['web']], function () {
+    //USB דוח סיכום להכנסות/הוצאות לעמותה
+    Route::get('show', [AdahiController::class ,'showReport'])->name('adahi_report.show');
 
 });
 

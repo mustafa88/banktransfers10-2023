@@ -20,12 +20,12 @@
 
     <td>{{$rowData['dateincome']}}</td>
     <td><a class="{{$colortd}}">{{$rowData['projects']['name']}}</a></td>
-    <td>{{$rowData['nameclient']}}</td>
-    <td>{{$rowData['amount']}} {{$rowData['currency']['symbol']}}</td>
-    <td>{{$rowData['titletwo']['ttwo_text']}}</td>
-    <td>{{$rowData['income']['name']}}</td>
     <td>{{$rowData['kabala']}}</td>
     <td>{{$rowData['kabladat']}}</td>
+    <td>{{$rowData['nameclient']}}</td>
+    <td>{{$rowData['currency']['symbol']}}{{$rowData['amount']}}</td>
+    <td>{{$rowData['income']['name']}}</td>
+    <td>{{$rowData['titletwo']['ttwo_text']}}</td>
     <td>{{$rowData['phone']}}</td>
     <td>@if(!is_null($rowData['son']) and $rowData['son']=='1')
             نعم

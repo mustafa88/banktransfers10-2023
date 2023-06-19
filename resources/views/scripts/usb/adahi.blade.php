@@ -1,15 +1,17 @@
 
     <script type="text/javascript">
-
-
+        const _SHEEP = 2000;
+        const _COW = 9800;
+        const _COWSEVEN = 1400;
         let myTable,myRowTable=null;
 
         let _param_url  ={!! json_encode($param_url) !!}
+
         $(document).ready(function(){
             myTable = $('#datatable1').DataTable({
                 'paging': true, // Table pagination
                 'ordering': true, // Column ordering
-                "order": [[ 0, 'desc']],
+                "order": [[ 0, 'desc'],[ 1, 'desc']],
                 'info': true, // Bottom left status text
                 //fixedHeader: true,
                 responsive: true,
@@ -23,30 +25,25 @@
             InitPage();
         });
 
-        $('#id_proj').on( 'change', function () {
-            $('#id_expense').find('option').remove()
 
-            let url= '{{route('table.expensebyproject.store')}}';
 
-            url +="/"+$(this).val();
-            let resultAjax = SendToAjax(url,'GET');
-            //console.log(resultAjax);
-            $('#id_expense').append(`<option value="0">اختر</option>`);
-            $('#id_expense').append(`<option value="999999">مورد اخر</option>`);
-            for(let i=0;i<resultAjax.length;i++){
-                $('#id_expense').append(`<option value="${resultAjax[i]['id']}">  ${resultAjax[i]['name']} </option>`);
-            }
-            $("#id_expense").val('0');
-            _param_url['id_proj']= $('#id_proj').val();
+        $('#sheep , #cow ,#cowseven ,#expens').on( 'change', function () {
+            let sheep = Number($('#sheep').val()) * _SHEEP;
+            let cow = Number($('#cow').val()) * _COW;
+            let cowseven =Number($('#cowseven').val()) * _COWSEVEN;
+            let expens =Number($('#expens').val());
 
-            $('#id_expense').change();
+            let totalmoney = sheep + cow + cowseven + expens;
+            $('#totalmoney').val(totalmoney)
+
         }).change();
+
 
         /**
          * שמירה
          * save new data or update data exists
          */
-        $('#btn_save').on( 'click', function () {
+        $('#btn_save').on( 'click', function (a,b,c) {
 
             let id_line = $("#id_line").val();
 
@@ -58,13 +55,14 @@
             //alert(id_line);
             if(id_line=='0'){
                 //insert
-                let url= '{{route('usb_expense.storeajax',['p1','p2','p3'])}}';
+                let url= '{{route('adahi.storeajax',['p1'])}}';
                 url = urlParam(url);
                 //console.log(url);
 
                 //return url;
                 let resultAjax = SendToAjax(url,'POST');
-                console.log(resultAjax);
+                 console.log(resultAjax);
+                //return;
                 if(resultAjax==undefined){
                     notify('حدث خطأ','error');
                     return false;
@@ -73,19 +71,21 @@
                 if(resultAjax.status===false){
                     return;
                 }
-                let thisRow = myTable.row.add($(resultAjax['rowHtml'])[0]).draw().node();
-                //console.log(xxx);
-                //$(xxx.node()).addClass('add-animation');
+                //console.log(myTable.row)
+                let thisRow =  myTable.row.add($(resultAjax['rowHtml'])[0]).draw().node();
+                //console.log(newRow.node());
+                //console.log($(newRow).find('tr'));
+                //console.log($(newRow.node()).find('td'));
                 //animationNewElement(thisRow);
             }else{
                 //return;
                 //update
                 //notify('update');
-                let url= '{{route('usb_expense.updateajax',['p1','p2','p3'])}}';
+                let url= '{{route('adahi.updateajax',['p1'])}}';
                 url = urlParam(url,id_line);
 
                 let resultAjax = SendToAjax(url,'PUT');
-                //console.log(resultAjax);
+                console.log(resultAjax);
                 //return;
                 if(resultAjax==undefined){
                     notify('حدث خطأ','error');
@@ -104,20 +104,12 @@
                 }
                 myTable.draw();
                 let thisRow = row.node();
-
                 //animationNewElement(thisRow);
-                /**
-                $(thisRow).addClass('add-animation');
-                setTimeout(() => {
-                    $(thisRow).removeClass('add-animation');
-                }, 2000)
-                **/
-                //console.log($(thisRow));
+                //let thisRow = row.node();
                 //$(thisRow).find('td').eq(1).css("background-color",newData['color_code']);
 
 
             }
-
             InitPage();
         });
 
@@ -129,12 +121,10 @@
             var nRow = $(this).parents('tr')[0];
             var aData = myTable.row(nRow).data();
 
-            let url='{{route('usb_expense.editajax',['p1','p2','p3'])}}';
+            let url='{{route('adahi.editajax',['p1'])}}';
             url = urlParam(url,idline);
-            //alert(url);
-
             let resultAjax = SendToAjax(url,'GET');
-            //console.log(resultAjax);
+            console.log(resultAjax);
 
             if(resultAjax.status===false){
                 notify(resultAjax.msg ,resultAjax.cls);
@@ -142,26 +132,34 @@
             }
             let row = resultAjax.row;
             $("#id_line").val('0');
-            $("#id_proj").val(row.id_proj).change();
-            //console.log(row.id_expense);
-            if(row.id_expense== null){
-                row.id_expense='0';
-            }
-            $("#dateexpense").val(row.dateexpense);
-            $("#asmctaexpense").val(row.asmctaexpense);
-            $("#id_expense").val(row.id_expense);
-            $("#id_expenseother").val(row.id_expenseother);
-            $("#amount").val(row.amount);
+            invoicedate
+
+            $("#invoicedate").val(row.invoicedate);
+            $("#invoice").val(row.invoice);
+            $("#nameclient").val(row.nameclient);
+            $("#sheep").val(row.sheep);
+            $("#cowseven").val(row.cowseven);
+            $("#cow").val(row.cow);
+            $("#expens").val(row.expens);
+            $("#totalmoney").val(row.totalmoney);
             $("#id_titletwo").val(row.id_titletwo);
-            $("#numinvoice").val(row.numinvoice);
-            $("#dateinvoice").val(row.dateinvoice);
+            $("#phone").val(row.phone);
+            if(row.waitthll =='1'){
+                $("#waitthll").prop('checked', true);
+            }
+            if(row.partahadi =='1'){
+                $("#partahadi").prop('checked', true);
+            }
+            $("#partdesc").val(row.partdesc);
+            if(row.son =='1'){
+                $("#son").prop('checked', true);
+            }
+            $("#nameovid").val(row.nameovid);
             $("#note").val(row.note);
 
-            $('#id_expense').change();
 
             myRowTable=nRow;
             $("#id_line").val(idline);
-
             $("#addline").collapse('show');
             $('html, body').animate({
                 scrollTop: $("#addline").offset().top
@@ -182,7 +180,7 @@
             var aData = myTable.row(nRow).data();
             let idline = $(this).data('idline');
             $("#id_line").val(idline);
-            let url= '{{route('usb_expense.deleteajax',['p1','p2','p3'])}}';
+            let url= '{{route('adahi.deleteajax',['p1'])}}';
             url = urlParam(url,idline);
             let resultAjax = SendToAjax(url,'DELETE');
             //console.log(resultAjax);
@@ -205,7 +203,7 @@
         $(document).on('click', '#showbydate', function (e) {
             var fdate= $("#fromdate").val();
             var tdate= $("#todate").val();
-            let url='{{route('usb_expense_entrep.show' ,['p1','p3'])}}';
+            let url='{{route('adahi.show' ,['p1'])}}';
             url = urlParam(url);
 
             if(fdate=="" || tdate==""){
@@ -220,6 +218,7 @@
 
 
         $(document).on('click', '#showbydatereport', function (e) {
+
             var fdate= $("#fromdate").val();
             var tdate= $("#todate").val();
             if(fdate=="" || tdate==""){
@@ -227,49 +226,51 @@
                 return false;
             }
 
-            let url='{{route('usb_report.show' ,['p1'])}}';
-            url = urlParam(url);
+            let url='{{route('adahi_report.show')}}';
+
             url += "?fromDate=" + fdate + "&toDate=" + tdate;
 
             //alert(url);
             window.location.href = url;
-
         });
 
-        $(document).on('change', '#id_expense', function (e){
-            let a = $('#id_expense').val();
-            if(a=='999999'){
-                $("#id_expenseother").show();
-            }else{
-                $("#id_expenseother").val('').hide();
-            }
-        }).change();
-
-
         function urlParam(url ,id_line){
-            url = url.replace('p1', _param_url['id_entrep'] ).replace('p2', _param_url['id_proj'] ).replace('p3', _param_url['id_city'] )
+            url = url.replace('p1', _param_url['id_city'] );
             if(id_line!= undefined ){
                 url += "/" + id_line;
             }
             return url;
         }
 
-        function InitPage(){
+
+
+
+        function InitPage(customRest){
 
             myRowTable=null;
             $("#id_line").val('0');
-            $("#id_proj").val('1').change();
-            $("#asmctaexpense").val('');
-            //$("#").val('');
 
-            $("#id_expense").val('0').change();
-            $("#id_expenseother").val('');
+
             $("#amount").val('');
-            $("#id_titletwo").val('');
-            $("#numinvoice").val('');
-            $("#dateinvoice").val('');
+
+            $("#nameclient").val('');
+            $("#sheep").val('');
+            $("#cowseven").val('');
+            $("#cow").val('');
+            $("#expens").val('').change();
+
+            $("#id_titletwo").val('3');
+
+            $("#invoice").val('');
+
+            $("#phone").val('');
+            $("#waitthll").prop('checked', false);
+            $("#partahadi").prop('checked', false);
+            $("#partdesc").val('');
+            $("#son").prop('checked', false);
             $("#note").val('');
 
+            //$("#nameovid").val('');
             let today = new Date();
             let yyyy = today.getFullYear();
             let mm = today.getMonth() + 1; // Months start at 0!
@@ -279,12 +280,8 @@
             if (mm < 10) mm = '0' + mm;
 
             const formattedToday =  yyyy + '-' + mm + '-' + dd;
-            $("#dateexpense").val('');
-
-            //$(".ramdan").hide();
-            //$("#id_expenseother").hide();
+            $("#invoicedate").val(formattedToday);
         }
-
 
     </script>
 

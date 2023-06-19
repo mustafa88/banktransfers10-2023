@@ -21,22 +21,34 @@
                     </div>
                 @endif
             </div>
-            <form>
+            <form  >
                 <div class="form-row align-items-center">
+
                     <div class="col-auto">
-                        <label for="fdate">מתאריך</label>
+
+                        <label for="enterprise">الجمعية</label>
+
+                        <select name="enterprise" id="enterprise" class="custom-select custom-select-sm">
+                            <option value="-1">اختر</option>
+                            @foreach($enterprise_arr as $item)
+                                <option value="{{$item['id']}}" @if($id_entrep==$item['id']) selected @endif>{{$item['name']}} </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-auto">
+                        <label for="fromDate">מתאריך</label>
                         <input type="date" name="fromDate" id="fromDate" value="{{session()->get('showLineFromDate')}}"
                                class="form-control mb-2">
                     </div>
 
                     <div class="col-auto">
-                        <label for="tdate">עד תאריך</label>
+                        <label for="toDate">עד תאריך</label>
                         <input type="date" name="toDate" id="toDate" value="{{session()->get('showLineToDate')}}"
                                class="form-control mb-2">
                     </div>
 
                     <div class="col-auto">
-                        <button class="btn btn-primary mb-2" type="submit">Submit</button>
+                        <button class="btn btn-primary mb-2" type="button" id="showData">عرض</button>
                     </div>
 
                 </div>
@@ -159,6 +171,9 @@
 
 @section('page-script')
     {{--  load file js from folder public --}}
+
+    @include( "scripts.usb.income_expense_Report" )
+    showData
 @endsection
 
 {{--

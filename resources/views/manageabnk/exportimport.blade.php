@@ -33,6 +33,7 @@
                                 <option value="0">نوع الملف</option>
                                 <option value="income">مدخولات</option>
                                 <option value="expense">مصروفات</option>
+                                <option value="adahi">اضاحي</option>
                                 <option value="donate">تبرعات عينيه</option>
                                 <option value="donatetype">انواع التبرعات العيتية</option>
 

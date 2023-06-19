@@ -104,8 +104,8 @@ class UsbExpenseController extends Controller
 
         $usbexpense = Usbexpense::with(['enterprise','projects','city','expense','titletwo'])
 
-            ->where('dateexpense', '>=', $showLineFromDate)
-            ->where('dateexpense', '<=', $showLineToDate)
+            ->where('dateinvoice', '>=', $showLineFromDate)
+            ->where('dateinvoice', '<=', $showLineToDate)
             ->where('id_enter',$id_entrep)
             //->where('id_proj',$id_proj)
             ->where('id_city',$id_city)
@@ -140,7 +140,6 @@ class UsbExpenseController extends Controller
                 return $resultArr;
             }
 
-
             if($request->id_expense=='999999' and $request->id_expenseother==null){
                 $resultArr['status'] = false;
                 $resultArr['cls'] = 'error';
@@ -148,24 +147,35 @@ class UsbExpenseController extends Controller
                 return $resultArr;
             }
 
+            if(!(
+                ($request->id_titletwo=="" and $request->dateexpense=="" and $request->asmctaexpense=="") or
+                ($request->id_titletwo!="" and $request->dateexpense!="" and $request->asmctaexpense!="")
+            )){
+                $resultArr['status'] = false;
+                $resultArr['cls'] = 'error';
+                $resultArr['msg'] = 'لم يتم ادخال جميع معلومات الدفع' . $request->id_titletwo;
+                return $resultArr;
+            }
             $arrDate = [
                 'id_enter' =>$id_entrep,
                 'id_proj' => $id_proj,
                 'id_city' => $id_city,
-                'dateexpense' => $request->dateexpense,
-                'asmctaexpense' => $request->asmctaexpense,
-                //'id_expense' => $request->id_expense,
-                'id_expenseother' => $request->id_expenseother,
-                'amount' => $request->amount,
-                'id_titletwo' => $request->id_titletwo,
                 'dateinvoice' => $request->dateinvoice,
                 'numinvoice' => $request->numinvoice,
+                'id_expenseother' => $request->id_expenseother,
+                'amount' => $request->amount,
                 'note' => $request->note,
             ];
 
+            if($request->id_titletwo!=""){
+                $arrDate['id_titletwo'] = $request->id_titletwo;
+                $arrDate['dateexpense'] = $request->dateexpense;
+                $arrDate['asmctaexpense'] = $request->asmctaexpense;
+            }
             if($request->id_expense!='999999'){
                 $arrDate['id_expense'] = $request->id_expense;
             }
+
 
             $rowinsert = Usbexpense::create($arrDate);
 
@@ -189,7 +199,7 @@ class UsbExpenseController extends Controller
 
             $resultArr['status'] = false;
             $resultArr['cls'] = 'error';
-            $resultArr['msg'] = 'حصل خطا اثناء الحفظ';
+            $resultArr['msg'] = 'حصل خطا اثناء الحفظ' ;
             $resultArr['errormsg'] = $exp->getMessage();
             return $resultArr;
         }
@@ -207,6 +217,15 @@ class UsbExpenseController extends Controller
             }
 
 
+            if(!(
+                ($request->id_titletwo=="" and $request->dateexpense=="" and $request->asmctaexpense=="") or
+                ($request->id_titletwo!="" and $request->dateexpense!="" and $request->asmctaexpense!="")
+            )){
+                $resultArr['status'] = false;
+                $resultArr['cls'] = 'error';
+                $resultArr['msg'] = 'لم يتم ادخال جميع معلومات الدفع' . $request->id_titletwo;
+                return $resultArr;
+            }
 
             $rowUsbexpense = Usbexpense::where('id_enter',$id_entrep)
                 //->where('id_proj',$id_proj)
@@ -231,10 +250,10 @@ class UsbExpenseController extends Controller
 
 
             $rowUsbexpense->id_proj = $id_proj;
-            $rowUsbexpense->dateexpense =  $request->dateexpense;
-            $rowUsbexpense->asmctaexpense =  $request->asmctaexpense;
+            //$rowUsbexpense->dateexpense =  $request->dateexpense;
+            //$rowUsbexpense->asmctaexpense =  $request->asmctaexpense;
             $rowUsbexpense->amount =  $request->amount;
-            $rowUsbexpense->id_titletwo =  $request->id_titletwo;
+            //$rowUsbexpense->id_titletwo =  $request->id_titletwo;
             $rowUsbexpense->dateinvoice =  $request->dateinvoice;
             $rowUsbexpense->numinvoice =  $request->numinvoice;
             $rowUsbexpense->note =  $request->note;
@@ -245,6 +264,16 @@ class UsbExpenseController extends Controller
             }else{
                 $rowUsbexpense->id_expense = null;
                 $rowUsbexpense->id_expenseother =  $request->id_expenseother;
+            }
+
+            if($request->id_titletwo!=""){
+                $rowUsbexpense->id_titletwo = $request->id_titletwo;
+                $rowUsbexpense->dateexpense = $request->dateexpense;
+                $rowUsbexpense->asmctaexpense = $request->asmctaexpense;
+            }else{
+                $rowUsbexpense->id_titletwo = null;
+                $rowUsbexpense->dateexpense = null;
+                $rowUsbexpense->asmctaexpense = null;
             }
 
             $rowUsbexpense->save();

@@ -32,17 +32,22 @@ class UsbExpenseRequest extends FormRequest
                 break;
             case 'PUT'://Update/Replace
                 $arrRules = [
-                    'dateexpense' => 'required|date_format:Y-m-d',
+                    'id_proj' => 'required|numeric|min:1',
                     'id_expense' => 'required|numeric|min:1',
                     'amount' => 'required|numeric|min:1',
+                    'numinvoice' => 'required|numeric|min:0',
+                    'dateinvoice' => 'required|date_format:Y-m-d',
                 ];
                 break;
             case 'POST'://Create
 
                 $arrRules = [
-                    'dateexpense' => 'required|date_format:Y-m-d',
+
+                    'id_proj' => 'required|numeric|min:1',
                     'id_expense' => 'required|numeric|min:1',
                     'amount' => 'required|numeric|min:1',
+                    'numinvoice' => 'required|numeric|min:0',
+                    'dateinvoice' => 'required|date_format:Y-m-d',
                 ];
                 //$arrRules = [];
                 break;

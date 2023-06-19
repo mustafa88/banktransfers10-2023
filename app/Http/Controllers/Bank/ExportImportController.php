@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Bank;
 use App\Http\Controllers\Controller;
 use App\Models\Bank\Donatetype;
 use App\Models\Bank\Donateworth;
+use App\Models\Usb\Adahi;
 use App\Models\Usb\Usbexpense;
 use App\Models\Usb\Usbincome;
 use Illuminate\Http\Request;
@@ -54,6 +55,10 @@ class ExportImportController extends Controller
                 //$fileDb = Usbexpense::withTrashed()->all()->toArray();
                 $fileDb = Usbexpense::withTrashed()->get()->toArray();
                 $startName = "expense-";
+                break;
+            case "adahi":
+                $fileDb = Adahi::withTrashed()->get()->toArray();
+                $startName = "adahi-";
                 break;
             default:
                 return redirect()->back()->withErrors(['msg' => "خطا بنوع الملف"]);
@@ -116,6 +121,11 @@ class ExportImportController extends Controller
                 $lenArr = 16;
                 $nameFun = 'import_expense';
                 break;
+            case "adahi":
+                //הוצאות
+                $lenArr = 25;
+                $nameFun = 'import_adahi';
+                break;
             default:
                 return redirect()->back()->withErrors(['msg' => "خطا بنوع الملف"]);
         }
@@ -132,6 +142,10 @@ class ExportImportController extends Controller
         return $this->$nameFun($dataDat);
 
     }
+
+
+
+
 
     /**
      * @param $dataDat
@@ -404,6 +418,101 @@ class ExportImportController extends Controller
                     'deleted_at' => $item[13]==''?null:$item[13],
                     'created_at' => $item[14],
                     'updated_at' => $item[15],
+                ]);
+                $insertCount++;
+            }
+
+            \DB::commit(); // Tell Laravel this transacion's all good and it can persist to DB
+            return redirect()->back()->with("success", "تم الحفظ بنجاح - تم النعديل على {$updateCount} وتم حفظ {$insertCount} اسطر جديدة");
+
+        } catch (\Exception $exp) {
+
+            \DB::rollBack(); // Tell Laravel, "It's not you, it's me. Please don't persist to DB"
+            return redirect()->back()->withErrors(['msg' => "حدث خطا اثناء الحفظ - لم يتم حفظ اي معلومه من الملف <BR> " . $exp->getMessage()]);
+        }
+    }
+
+
+    public function import_adahi($dataDat)
+    {
+        //הכנסות
+        try {
+            \DB::beginTransaction();
+
+            $updateCount = 0;
+            $insertCount = 0;
+            foreach ($dataDat as $item) {
+
+                $uuid_adahi = $item[0];
+                $updated_at_file = substr($item[24], 0, 10) . " " . substr($item[24], 11, 8);
+                //ddd($updated_at);
+                $adahi_check = Adahi::withTrashed()->find($uuid_adahi);
+
+
+                if ($adahi_check) {
+                    $updated_at_db = $adahi_check['updated_at']->format('Y-m-d H:i:s');
+                    //ddd($donateworth_check->updated_at->toW3cString());
+                    //UPDATE
+                    //שורה קיימת לבדוק את תאריך עדכון שונה - ואז צריך לעדכן את כל השורה אחרת מדלגים
+                    if ($updated_at_db != $updated_at_file) {
+                        $adahi_check->datewrite = $item[1];
+                        $adahi_check->id_city = $item[2];
+                        $adahi_check->invoice = $item[3];
+                        $adahi_check->invoicedate = $item[4];
+                        $adahi_check->nameclient = $item[5];
+                        $adahi_check->sheepprice = $item[6];
+                        $adahi_check->cowsevenprice = $item[7];
+                        $adahi_check->cowprice = $item[8];
+                        $adahi_check->sheep = $item[9];
+                        $adahi_check->cowseven = $item[10];
+                        $adahi_check->cow = $item[11];
+                        $adahi_check->expens = $item[12];
+                        $adahi_check->totalmoney = $item[13];
+                        $adahi_check->id_titletwo = $item[14];
+                        $adahi_check->phone = $item[15]==''?null:$item[15];
+                        $adahi_check->waitthll = $item[16]==''?null:$item[16];
+                        $adahi_check->partahadi = $item[17]==''?null:$item[17];
+                        $adahi_check->partdesc = $item[18]==''?null:$item[18];
+                        $adahi_check->son = $item[19]==''?null:$item[19];
+                        $adahi_check->note = $item[20]==''?null:$item[20];
+                        $adahi_check->nameovid = $item[21];
+                        $adahi_check->deleted_at = $item[22]==''?null:$item[22];
+                        $adahi_check->created_at = $item[23];
+                        $adahi_check->updated_at = $item[24];
+
+                        $adahi_check->save();
+                        $updateCount++;
+                    }
+                    continue;
+
+                }
+                //INSERT
+                Adahi::create([
+                        'uuid_adha' => $uuid_adahi,
+                        'datewrite' => $item[1],
+                        'id_city' => $item[2],
+                        'invoice' => $item[3],
+                        'invoicedate' => $item[4],
+                        'nameclient' => $item[5],
+                        'sheepprice' => $item[6],
+                        'cowsevenprice' => $item[7],
+                        'cowprice' => $item[8],
+                        'sheep' => $item[9],
+                        'cowseven' => $item[10],
+                        'cow' => $item[11],
+                        'expens' => $item[12],
+                        'totalmoney' => $item[13],
+                        'id_titletwo' => $item[14],
+                        'phone' => $item[15]==''?null:$item[15],
+                        'waitthll' => $item[16]==''?null:$item[16],
+                        'partahadi' => $item[17]==''?null:$item[17],
+                        'partdesc' => $item[18]==''?null:$item[18],
+                        'son' => $item[19]==''?null:$item[19],
+                        'note' => $item[20]==''?null:$item[20],
+                        'nameovid' => $item[21],
+                        'deleted_at' => $item[22]==''?null:$item[22],
+                        'created_at' => $item[23],
+                        'updated_at' => $item[24],
                 ]);
                 $insertCount++;
             }

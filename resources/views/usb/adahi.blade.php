@@ -34,17 +34,13 @@
                 <div class="form-row align-items-center">
 
                     <div class="col-auto">
-                        <label for="id_proj">المشروع</label>
-                        <select name="id_proj" id="id_proj" class="custom-select custom-select-sm">
-                            @foreach($projects as $item)
-                                <option value="{{$item['id']}}">{{$item['name']}} </option>
-                            @endforeach
-                        </select>
+                        <label for="invoicedate">تاريخ الوصل <span style="color: #ff0000;font-weight: bold;">*</span></label>
+                        <input class="form-control mb-2" name="invoicedate" id="invoicedate" type="date">
                     </div>
 
                     <div class="col-auto">
-                        <label for="kabala">رقم الوصل <span style="color: #ff0000;font-weight: bold;">*</span></label>
-                        <input class="form-control mb-2" name='kabala' id="kabala" type="number">
+                        <label for="invoice">رقم الوصل <span style="color: #ff0000;font-weight: bold;">*</span></label>
+                        <input class="form-control mb-2" name='invoice' id="invoice" type="number">
                     </div>
 
                     <div class="col-auto">
@@ -56,27 +52,34 @@
                     </div>
 
                     <div class="col-auto">
-                        <label for="amount">المبلغ <span style="color: #ff0000;font-weight: bold;">*</span></label>
-                        <input class="form-control mb-2" name='amount' id="amount" type="number">
+                        <label for="sheep">خروف - 2,000<span style="color: #ff0000;font-weight: bold;">*</span></label>
+                        <input class="form-control mb-2" name='sheep' id="sheep" type="number" >
                     </div>
                     <div class="col-auto">
-                        <label for="id_incom">نوع التبرع <span style="color: #ff0000;font-weight: bold;">*</span></label>
-                        <select name="id_incom" id="id_incom" class="custom-select custom-select-sm">
-                        </select>
+                        <label for="cowseven">سبع عجل  - 1,400<span style="color: #ff0000;font-weight: bold;">*</span></label>
+                        <input class="form-control mb-2" name='cowseven' id="cowseven" type="number"  max="6">
+                    </div>
+                    <div class="col-auto">
+                        <label for="cow">عجل - 9,800<span style="color: #ff0000;font-weight: bold;">*</span></label>
+                        <input class="form-control mb-2" name='cow' id="cow" type="number" >
                     </div>
 
                     <div class="col-auto">
-                        <label for="id_curn">العملة <span style="color: #ff0000;font-weight: bold;">*</span></label>
-                        <select name="id_curn" id="id_curn" class="custom-select custom-select-sm">
-                            @foreach($currency as $item)
-                                <option value="{{$item['curn_id']}}">{{$item['symbol']}} - {{$item['name']}} </option>
-                            @endforeach
-                        </select>
+                        <label for="expens">مصاريف الذبح <span style="color: #ff0000;font-weight: bold;">*</span></label>
+                        <input class="form-control mb-2" name='expens' id="expens" type="number" >
                     </div>
+                    <div class="col-auto">
+                        <label for="totalmoney">المجموع <span style="color: #ff0000;font-weight: bold;">*</span></label>
+                        <input class="form-control mb-2" name='totalmoney' id="totalmoney" type="number" readonly>
+                    </div>
+
+
+                </div>
+                    <div class="form-row align-items-center">
 
                     <div class="col-auto">
                         <label for="id_titletwo">طريقة الدفع <span style="color: #ff0000;font-weight: bold;">*</span></label>
-                        <select name="id_titletwo" id="id_titletwo" class="custom-select custom-select-sm">
+                        <select name="id_titletwo" id="id_titletwo" class="custom-select  mb-2 custom-select-sm">
                             @foreach($title_two as $item)
                                 <option value="{{$item['ttwo_id']}}">{{$item['ttwo_text']}}</option>
                             @endforeach
@@ -84,29 +87,42 @@
                     </div>
 
 
+                        <div class="col-auto">
+                            <label for="phone">هاتف المتبرع</label>
+                            <input class="form-control mb-2" name="phone" id="phone" type="text" maxlength="10">
+                        </div>
+
+                        <div class="col-auto">
+                            <label for="waitthll">منتظر تحلل</label>
+                            <input class="form-control mb-2" name="waitthll" id="waitthll" type="checkbox">
+                        </div>
+
+                        <div class="col-auto">
+                            <label for="partahadi">جزء من الاضحية</label>
+                            <input class="form-control mb-2" name="partahadi" id="partahadi" type="checkbox">
+                        </div>
+
+                        <div class="col-auto">
+                            <label for="partdesc">وصف الجزء</label>
+                            <input class="form-control mb-6" name='partdesc' id="partdesc" type="text">
+                        </div>
+
+                        <div class="col-auto">
+                            <label for="son">ابن الجمعية</label>
+                            <input class="form-control mb-2" name="son" id="son" type="checkbox">
+                        </div>
 
 
 
-
-                    <div class="col-auto">
-                        <label for="kabladat">تاريخ الوصل <span style="color: #ff0000;font-weight: bold;">*</span></label>
-                        <input class="form-control mb-2" name="kabladat" id="kabladat" type="date">
-                    </div>
 
                     <div class="col-auto">
                         <label for="nameovid">اسم المستقبل <span style="color: #ff0000;font-weight: bold;">*</span></label>
                         <input class="form-control mb-2" name='nameovid' id="nameovid" type="text">
                     </div>
 
-                    <div class="col-auto">
-                        <label for="phone">هاتف المتبرع</label>
-                        <input class="form-control mb-2" name="phone" id="phone" type="text" maxlength="10">
-                    </div>
 
-                    <div class="col-auto">
-                        <label for="son">ابن الجمعية</label>
-                        <input class="form-control mb-2" name="son" id="son" type="checkbox">
-                    </div>
+
+
 
 
                     <div class="col-auto">
@@ -118,49 +134,18 @@
 
                 <div class="form-row align-items-center">
 
-
                     <div class="col-auto">
-                        {{--
                         <button class="btn btn-primary mb-2" type="button" name="btn_save" id="btn_save">حفظ</button>
-                        <button class="btn btn-secondary mb-2" type="button" name="btn_cancel"   id="btn_cancel">الغاء</button>
-                        --}}
-
-                        <!-- Example split danger button -->
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-primary" id="btn_save">حفظ</button>
-                            <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="sr-only">Toggle Dropdown</span>
-                            </button>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="javascript:void('0')" id="btn_save_again">حفط + تكرار</a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#" id="btn_cancel" >الغاء</a>
-                            </div>
-                        </div>
+                        <button class="btn btn-secondary mb-2" type="button" name="btn_cancel" id="btn_cancel">الغاء</button>
                     </div>
                 </div>
+
+
                 <input type="hidden" name="id_line" id="id_line" value="0">
+
             </form>
 
             <div>
-
-                <div class="col-xl-6" id="listkabala">
-                    <p class="bg-warning">تبرعات على نفس الوصل</p>
-                <div class="table-responsive table-bordered ">
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th>تاريخ الوصل</th>
-                            <th>اسم متبرع</th>
-                            <th>مبلغ</th>
-                            <th>نوع التبرع</th>
-                        </tr>
-                        </thead>
-                        <tbody id="listkabalabody">
-                        </tbody>
-                    </table>
-                </div>
-                </div>
                 @if (Session::has('success'))
                     <div class="row">
                         <div class="alert alert-success" role="alert"><strong>{{ Session::get('success') }}</strong>
@@ -180,7 +165,7 @@
             <!-- DATATABLE DEMO 1-->
             <div class="card card-default">
                 <div class="card-header">
-                    <div class="card-title">سجل المدخولات</div>
+                    <div class="card-title">اضاحي عطاء</div>
 
                     <div class="form-row align-items-center">
                         <div class="col-auto">
@@ -205,15 +190,23 @@
                     <table class="table table-striped my-4 w-100 hover" id="datatable1">
                         <thead>
                         <tr>
-                            <th>تاريخ</th>
-                            <th>مشروع</th>
-                            <th>رقم الوصل</th>
+                            <th>تاريخ الادخال</th>
+                            <th>الوصل</th>
                             <th>تاريخ الوصل</th>
                             <th>اسم المتبرع</th>
-                            <th>مبلغ</th>
-                            <th>نوع التبرع</th>
+                            {{--
+                            <th>خروف</th>
+                            <th>سبع عجل</th>
+                            <th>عجل</th>
+                            <th>مصاريف ذبح</th>
+                            <th>مجموع</th>
+                            --}}
+                            <th>تبرع</th>
                             <th>طريقة الدفع</th>
                             <th>هاتف المتبرع</th>
+                            <th>تحلل</th>
+                            <th>جزء من الاضحيه</th>
+                            <th>وصف</th>
                             <th>ابن الجمعية</th>
                             <th>اسم المستقبل</th>
                             <th>ملاحظه</th>
@@ -222,8 +215,8 @@
                         </thead>
                         <tbody>
 
-                        @foreach($usbincome as $item)
-                            @include('layout.includes.usbincomeentrep',['rowData' => $item])
+                        @foreach($adahi as $item)
+                            @include('layout.includes.adahi',['rowData' => $item])
                         @endforeach
 
                         </tbody>
@@ -240,7 +233,7 @@
 @section('page-script')
 
     <script src="{{ asset('angle/vendor/sweetalert2/dist/sweetalert2.all.min.js') }}"></script><!-- SWEET ALERT-->
-    @include( "scripts.usb.incomeentrep" )
+    @include( "scripts.usb.adahi" )
 
     {{--
     @include('layout.includes.linedetailedit')

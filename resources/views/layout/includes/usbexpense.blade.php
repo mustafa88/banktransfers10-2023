@@ -18,9 +18,8 @@
 @endphp
 
 <tr>
-    <td>{{$rowData['dateexpense']}}</td>
+
     <td><a class="{{$colortd}}">{{$rowData['projects']['name']}}</a></td>
-    {{--<td>{{$rowData['asmctaexpense']}}</td>--}}
     <td>
         @if(is_null($rowData['id_expense']))
             {{$rowData['id_expenseother']}}
@@ -29,9 +28,31 @@
         @endif
     </td>
     <td>{{$rowData['amount']}}</td>
-    <td>{{$rowData['titletwo']['ttwo_text']}}</td>
-    {{--<td>{{$rowData['numinvoice']}}</td>
-    <td>{{$rowData['dateinvoice']}}</td>--}}
+    <td>{{$rowData['numinvoice']}}</td>
+    <td>{{$rowData['dateinvoice']}}</td>
+
+    <td>
+        @if(is_null($rowData['id_titletwo']))
+            <span class="text-danger">ממתין לתשלום</span>
+        @else
+            {{$rowData['titletwo']['ttwo_text']}}
+        @endif
+    </td>
+    <td>@if(is_null($rowData['dateexpense']))
+            <span class="text-danger">ממתין לתשלום</span>
+        @else
+        {{$rowData['dateexpense']}}
+        @endif
+    </td>
+    <td>
+        @if(is_null($rowData['asmctaexpense']))
+            <span class="text-danger">ממתין לתשלום</span>
+        @else
+        {{$rowData['asmctaexpense']}}
+        @endif
+    </td>
+
+
     <td>{{$rowData['note']}}</td>
 
     <td>
