@@ -64,6 +64,7 @@
                                             <th>مبلغ خروف</th>
                                             <th>مبلغ عجل</th>
                                             <th>مبلغ مصاريف الذبح</th>
+                                            <th>المجموع الكلي</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -75,6 +76,7 @@
                                                 <td>{{number_format($item['countcow'],0)}}</td>
                                                 <td>{{number_format($item['sumsheepprice'],0)}}</td>
                                                 <td>{{number_format($item['sumcow'],0)}}</td>
+                                                <td>{{number_format($item['sumexpens'],0)}}</td>
                                                 <td>{{number_format($item['sumtotalall'],0)}}</td>
                                             </tr>
                                         @endforeach
