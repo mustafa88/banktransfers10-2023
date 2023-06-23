@@ -209,7 +209,7 @@ Route::group(['prefix' => 'managebanks/listbanks', 'namespace' => 'Bank', 'middl
 
 Route::group(['prefix' => 'managebanks/csvbanks', 'namespace' => 'Bank', 'middleware' => ['web']], function () {
     //מסך ראשי להעלאה קובץ CSV לבנק
-    Route::get('storecsv', [BanksContrusb_expense_entrepoller::class, 'mainLoadCsv'])->name('banks.mainLoadCsv');
+    Route::get('storecsv', [BanksController::class, 'mainLoadCsv'])->name('banks.mainLoadCsv');
     //העלאת קובץ CSV
     Route::post('storecsv', [BanksController::class, 'storeFileCsv'])->name('banks.storeFileCsv');
 });
