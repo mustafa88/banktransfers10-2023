@@ -25,6 +25,16 @@
                         <em class="fas fa-home"></em><span>דף ראשי</span>
                     </a></li>
 
+
+                <li class=" "><a href="#dashboard" title="Tables" data-toggle="collapse"><em class="icon-grid"></em><span >dashboard</span></a>
+                    <ul class="sidebar-nav sidebar-subnav collapse" id="dashboard">
+                        <li class="sidebar-subnav-header">dashboard</li>
+                        <li class=" "><a href="{{route('dashboard.main')}}" title="שורות בנק"><span>שורות בנק</span></a></li>
+
+                    </ul>
+                </li>
+
+
                 <li class=" "><a href="{{ route('export_import') }}" title="יבוא ויצאו קבצים">
                         <em class="fas icon-layers"></em><span>יבוא ויצאו קבצים</span>
                     </a>

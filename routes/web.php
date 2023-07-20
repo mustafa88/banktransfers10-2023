@@ -21,6 +21,7 @@ use App\Http\Controllers\Usb\UsbIncomeController;
 use App\Http\Controllers\Usb\UsbExpenseController;
 use App\Http\Controllers\Bank\ExportImportController;
 use App\Http\Controllers\Usb\AdahiController;
+use App\Http\Controllers\Bank\DashboardController;
     /*middleware
     |--------------------------------------------------------------------------
     | Web Routes
@@ -46,7 +47,7 @@ use App\Http\Controllers\Usb\AdahiController;
 }*/
 /*
  * php artisan make:model Usb/Usbexpense
- * php artisan make:controller Usb/UsbExpenseController --resource
+ * php artisan make:controller Bank/DashboardController --resource
  * php artisan make:request Usb/UsbExpenseRequest
  *
  * php artisan make:controller Usb/ExportImportController
@@ -76,11 +77,11 @@ Route::get('/', function () {
     return view('demoangle');
 })->name('home');
 
-Route::get('/test', function () {
-     return 'test';
-    //TitleOneController->show
-});
 
+
+Route::group(['prefix' => 'dashboard', 'namespace' => 'Bank', 'middleware' => ['web']], function () {
+    Route::get('main/{year?}', [DashboardController::class ,'main'])->name('dashboard.main');
+});
 
 //Start project
 
