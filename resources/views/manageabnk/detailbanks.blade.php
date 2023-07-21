@@ -66,6 +66,9 @@
 
 
         <div class="table-responsive col-xl-12">
+
+            <!--  להציש חלוקה מחודש קודם -->
+
             <div class="alert alert-info " role="alert" id="msginfo">{{$msginfo}}</div>
 
             @include('layout.includes.linedetailedit' ,['bankslin' => $bankslin])

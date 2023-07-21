@@ -47,8 +47,38 @@ class BanksdetailController extends Controller
             'banksdetail.expense',
             'banksdetail.campaigns',
         ])->find($id_line);
+
         //return $bankslin;
 
+        /**
+        // Your special date
+        $specialDate = $bankslin['datemovement'];
+        // Create a Carbon instance from the special date
+        $carbonDate = Carbon::createFromFormat('Y-m-d', $bankslin['datemovement']);
+        // Get the last month from the special date
+        $lastMonth = $carbonDate->subMonth();
+        // Format the last month as desired
+        $formattedLastMonth = $lastMonth->format('Y-m-d');
+
+        $bankslin_same = Banksline::with([
+            'banks',
+            'titletwo',
+            'enterprise.project',
+            'enterprise.project.city',
+            'banksdetail',
+            'banksdetail.projects',
+            'banksdetail.city',
+            'banksdetail.income',
+            'banksdetail.expense',
+            'banksdetail.campaigns',
+        ])
+            ->where('asmcta',$bankslin['asmcta'])
+            ->where('description',$bankslin['description'])
+            ->where('datemovement',$bankslin['datemovement'])
+
+            ->find($id_line);
+        return $bankslin_same;
+         **/
 
         $project = $bankslin['enterprise']['project'];
 
@@ -72,6 +102,7 @@ class BanksdetailController extends Controller
         //print_r($allProject);
         //print_r($allCity);
         //return($projectCity);
+
         $msginfo = $this->msgInfo($id_line);
         //return $msginfo;
         return view('manageabnk.detailbanks', compact('bankslin', 'allProject', 'allCity', 'projectCity','suppress_income' ,'msginfo'))
