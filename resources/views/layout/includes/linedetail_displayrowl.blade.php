@@ -48,6 +48,9 @@
 
                 <a class="dropdown-item detail_row" href="{{route('linedetail.show',$rowBanksLine['id_line'])}}"
                    data-idline="{{$rowBanksLine['id_line']}}">עריכת פירוט שורה</a>
+
+                <a class="dropdown-item sameline_row" href="javascript:void(0)"
+                   data-idline="{{$rowBanksLine['id_line']}}">שורה דומה</a>
             </div>
         </div>
         @endif

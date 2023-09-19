@@ -9,6 +9,7 @@
         <th>סוג @if($bankslin['amountmandatory']=='0')זכות@elseחובה@endif</th>
         <th>קמפיין</th>
         <th>הערה</th>
+        <th>פעולה</th>
     </tr>
     </thead>
     <tr>
@@ -46,9 +47,13 @@
         </td>
 
         <td><input type="text" name="note" id="note" class="form-control mb-2 inptrowdetl" value=""></td>
-        @if(!isset($fullscome))
-            <td><button class="btn btn-primary mb-2" type="button" name="btn_save" id="btn_save">حفظ</button></td>
-        @endif
+
+        <td>
+            @if(!isset($fullscome))
+                <button class="btn btn-primary mb-2" type="button" name="btn_save" id="btn_save">حفظ</button>
+           @endif
+
+        </td>
 
     </tr>
 </table>

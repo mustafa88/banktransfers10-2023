@@ -80,7 +80,9 @@ Route::get('/', function () {
 
 
 Route::group(['prefix' => 'dashboard', 'namespace' => 'Bank', 'middleware' => ['web']], function () {
-    Route::get('main/{year?}', [DashboardController::class ,'main'])->name('dashboard.main');
+    Route::get('state_bank_lines/{year?}', [DashboardController::class ,'bankLines'])->name('dashboard.banklines');
+    //http://127.0.0.1:8000/dashboard/balance
+    Route::get('balance/{year?}', [DashboardController::class ,'balance'])->name('dashboard.balance');
 });
 
 //Start project
@@ -391,6 +393,10 @@ Route::group(['prefix' => 'managebanks/linedetail', 'namespace' => 'Bank', 'midd
 
     //שמירת חלוקת השורות
     Route::post('storedivline/{id_line}', [BanksdetailController::class ,'storeDivDetail'])->name('linedetail.storedivline');
+
+    //הצגת שורה דומה
+    Route::get('showsameline/{id_line?}', [BanksdetailController::class ,'showSameLine'])->name('linedetail.sameline');
+
 
 });
 

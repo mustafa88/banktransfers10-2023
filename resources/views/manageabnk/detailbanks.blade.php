@@ -18,7 +18,9 @@
     @endif
 
     <div class="card card-default">
-        <div class="card-header">טסט</div>
+        <div class="card-header">
+
+        </div>
         <div class="card-body">
             @if (Session::has('success'))
                 <div class="row">
@@ -60,6 +62,7 @@
 
                 </tbody>
             </table>
+                <p><button class="mb-1 btn btn-inverse" type="button" id="showSameLine">عرضض نتائج من الشهر الفائت</button></p>
         </div>
             <form method="post" name="myform" id="myform" action="#">
                 @csrf
@@ -78,8 +81,9 @@
 
                 </form>
 
-                @include('layout.includes.linedetaildivall'))
+                @include('layout.includes.linedetaildivall')
 
+                <div>
                 <table class="table table-striped my-4 w-100" id="datatable1">
                     <thead>
                     <tr>
@@ -151,6 +155,9 @@
 
                     </tbody>
                 </table>
+
+                </div>
+
             </div>
         </div>
 
@@ -176,6 +183,7 @@
         <script src="{{ asset('angle/vendor/jszip/dist/jszip.js') }}"></script>
         <script src="{{ asset('angle/vendor/pdfmake/build/pdfmake.js') }}"></script>
         <script src="{{ asset('angle/vendor/pdfmake/build/vfs_fonts.js') }}"></script>
+        <script src="{{ asset('angle/vendor/sweetalert2/dist/sweetalert2.all.min.js') }}"></script><!-- SWEET ALERT-->
 
         @include( "scripts.managebank.detailbanks" )
 

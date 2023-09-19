@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Bank;
 
 use App\Http\Controllers\Controller;
 use App\Models\bank\Banks;
+use App\Models\bank\Banksdetail;
 use App\Models\bank\Banksline;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -11,7 +12,14 @@ use Illuminate\Support\Facades\DB;
 class DashboardController extends Controller
 {
 
-    public function main($year=null){
+
+    /**
+     * @param $year
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     * מצבשוורת לכל בנק -
+     * כמה שורות יש בכל חודש וכמה מהם לא תקין
+     */
+    public function bankLines($year=null){
 
         if($year==null){
             $year = date('Y');
@@ -75,7 +83,7 @@ class DashboardController extends Controller
         for ($i=2021 ; $i<=date('Y') ;$i++){
             $arrYear[] = $i;
         }
-        return view('reports.dashboard', compact('arrYear','year','banks'))
+        return view('dashboard.banklines', compact('arrYear','year','banks'))
         ->with(
         [
         'pageTitle' => "ملخص التقدم السنوي",
@@ -83,4 +91,48 @@ class DashboardController extends Controller
         ]
         );
     }
+
+    /**
+     * @param $year
+     * @return void
+     * להציג יתרות
+     */
+    public function balance($year=null){
+        //20/09 - להמשייייייייייייייייך
+        /**
+         * בכל שנה להצעיג לכל חודש
+         * סך הכנסות
+         * סך הוצאות
+         * ויתרה סופית לפרויקט
+         */
+        /**مشاريع
+         * 1 - المحتاجين
+         **/
+        /**
+         * بلدان
+         * 1 - عام
+         * 2- الطيبة
+         */
+        if($year==null){
+            $year = date('Y');
+        }
+        $XXXX = Banksdetail::select(
+            DB::raw('SUM(Banksdetail.amountmandatory) as amountmandatory'),
+            DB::raw('SUM(Banksdetail.amountright) as amountright')
+        )
+        ->with(['banksline' => function ($query) use ($year) {
+            $query->whereYear('datemovement','=' ,$year);
+        }])
+            ->where('id_proj','1')
+            ->where('id_city','2')
+            //->sum('Banksdetail.amountmandatory');
+            //->sum('Banksdetail.amountright');
+            ->get();
+
+        return $XXXX;
+
+
+
+    }
+
 }

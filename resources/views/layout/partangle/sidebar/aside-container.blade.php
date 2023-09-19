@@ -29,7 +29,7 @@
                 <li class=" "><a href="#dashboard" title="Tables" data-toggle="collapse"><em class="icon-grid"></em><span >dashboard</span></a>
                     <ul class="sidebar-nav sidebar-subnav collapse" id="dashboard">
                         <li class="sidebar-subnav-header">dashboard</li>
-                        <li class=" "><a href="{{route('dashboard.main')}}" title="שורות בנק"><span>שורות בנק</span></a></li>
+                        <li class=" "><a href="{{route('dashboard.banklines')}}" title="שורות בנק"><span>שורות בנק</span></a></li>
 
                     </ul>
                 </li>
@@ -43,6 +43,7 @@
                 <li class=" "><a href="#tablesmanage" title="Tables" data-toggle="collapse"><em class="icon-grid"></em><span >הגדרות מערכת</span></a>
                     <ul class="sidebar-nav sidebar-subnav collapse" id="tablesmanage">
                         <li class="sidebar-subnav-header">הגדרות מערכת</li>
+                        <li class=" "><a href="{{route('banks.show')}}" title="قائمة البنوك"><span>قائمة البنوك</span></a></li>
                         <li class=" "><a href="{{route('table.title.show')}}" title="טבלת כותרת ראשית"><span>כותרת ראשית</span></a></li>
                         <li class=" "><a href="{{route('table.enterprise.show')}}" title="מבנה עמונה"><span>جدول الجمعيات</span></a></li>
                         <li class=" "><a href="{{route('table.city.show')}}" title="جدول البلدان"><span>جدول البلدان</span></a></li>
@@ -253,7 +254,7 @@
                 <li class=" "><a href="#banks" title="Tables" data-toggle="collapse"><em class="icon-grid"></em><span >בנקים</span></a>
                     <ul class="sidebar-nav sidebar-subnav collapse" id="banks">
                         <li class="sidebar-subnav-header">בנקים</li>
-                        <li class=" "><a href="{{route('banks.show')}}" title="قائمة البنوك"><span>قائمة البنوك</span></a></li>
+
 
                         <li class=" "><a href="{{route('banks.mainLoadCsv')}}" title="העלאת קובץ אקסל"><span>העלאת קובץ אקסל</span></a></li>
 

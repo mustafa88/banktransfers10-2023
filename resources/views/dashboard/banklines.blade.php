@@ -97,17 +97,8 @@
 
 @section('page-script')
 {{--  load file js from folder public - dashboard --}}
-<script type="text/javascript">
-    $(document).ready(function(){
+@include('scripts.dashboard.banklines')
 
-        $(document).on('change', '#selectyear', function (e) {
-            let url='{{route('dashboard.main')}}';
-            url += "/" + $(this).val();
-            //alert(url);
-            window.location.href = url;
-        });
-    });
-    </script>
 @endsection
 
 {{-- @include( "scripts.managetable.enterprise" ) --}}

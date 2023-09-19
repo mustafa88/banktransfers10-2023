@@ -10,7 +10,7 @@ use App\Models\bank\Expense;
 use App\Traits\BankslineTrait;
 use App\Traits\HelpersTrait;
 use Illuminate\Http\Request;
-
+use Carbon\Carbon;
 //use App\Models\bank\Banks;
 
 //use App\Models\bank\Enterprise;
@@ -50,35 +50,6 @@ class BanksdetailController extends Controller
 
         //return $bankslin;
 
-        /**
-        // Your special date
-        $specialDate = $bankslin['datemovement'];
-        // Create a Carbon instance from the special date
-        $carbonDate = Carbon::createFromFormat('Y-m-d', $bankslin['datemovement']);
-        // Get the last month from the special date
-        $lastMonth = $carbonDate->subMonth();
-        // Format the last month as desired
-        $formattedLastMonth = $lastMonth->format('Y-m-d');
-
-        $bankslin_same = Banksline::with([
-            'banks',
-            'titletwo',
-            'enterprise.project',
-            'enterprise.project.city',
-            'banksdetail',
-            'banksdetail.projects',
-            'banksdetail.city',
-            'banksdetail.income',
-            'banksdetail.expense',
-            'banksdetail.campaigns',
-        ])
-            ->where('asmcta',$bankslin['asmcta'])
-            ->where('description',$bankslin['description'])
-            ->where('datemovement',$bankslin['datemovement'])
-
-            ->find($id_line);
-        return $bankslin_same;
-         **/
 
         $project = $bankslin['enterprise']['project'];
 
@@ -105,13 +76,72 @@ class BanksdetailController extends Controller
 
         $msginfo = $this->msgInfo($id_line);
         //return $msginfo;
-        return view('manageabnk.detailbanks', compact('bankslin', 'allProject', 'allCity', 'projectCity','suppress_income' ,'msginfo'))
+        return view('manageabnk.detailbanks', compact('bankslin', 'allProject',
+            'allCity', 'projectCity','suppress_income' ,
+            'msginfo' ))
             ->with(
                 [
                     'pageTitle' => "פירוט תנועה בבנק",
                     'subTitle' => 'פירוט תנועות חשבון בבנק',
                 ]
             );
+    }
+
+    /**
+     * @param $id_line
+     * @return void
+     * מחזיר שורוה דומות  מלפני חודש לאותה שורה
+     * לפי תיאור ומס אסמכתא
+     */
+    public function showSameLine($id_line)
+    {
+        $bankslin = Banksline::find($id_line);
+
+        $formattedLastMonth = Carbon::createFromFormat('Y-m-d', $bankslin['datemovement'])->subMonth()->format('Y-m');
+
+        $description = $bankslin['description'];
+        if(strpos( $bankslin['description'],"תאריך ערך")!==false){
+            $description = substr(
+                $description,0,strpos( $description,"תאריך ערך")-1
+            );
+        }
+        //ddd(substr($bankslin['description'],0,5));
+        // ddd($description);
+        //return $formattedLastMonth;
+        $bankslin_same = Banksline::with([
+            'banks',
+            'titletwo',
+            'enterprise.project',
+            'enterprise.project.city',
+            'banksdetail',
+            'banksdetail.projects',
+            'banksdetail.city',
+            'banksdetail.income',
+            'banksdetail.expense',
+            'banksdetail.campaigns',
+        ])
+            ->where('id_bank',$bankslin['id_bank'])
+            ->where('asmcta',$bankslin['asmcta'])
+            ->where('description', 'LIKE', '%'.$description.'%')
+            ->whereDate('datemovement', 'LIKE', "{$formattedLastMonth}%")
+            ->get();
+        //return [$formattedLastMonth];
+        //return ['A'=>$bankslin_same,'B'=>count($bankslin_same)];
+
+        $tableHtml = view('layout.includes.linedetail_sameline',compact('bankslin_same'))->render();
+        //
+
+        //return view('layout.includes.linedetail_sameline',compact('bankslin_same'));
+
+        $resultArr['status'] = true;
+        $resultArr['cls'] = 'success';
+        $resultArr['html'] =$tableHtml;
+
+
+        //$resultArr['row'] = $rownew;
+        //$resultArr['msginfo'] = $this->msgInfo($id_line);
+        //return response()->json($resultArr);
+        return $resultArr;
     }
 
     /**

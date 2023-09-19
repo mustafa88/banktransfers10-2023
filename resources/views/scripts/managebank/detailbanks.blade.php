@@ -252,6 +252,24 @@
             return flg;
         }
 
+
+        $(document).on('click', '#showSameLine', function (e) {
+
+            let url= '{{ route('linedetail.sameline',$bankslin['id_line']) }}';
+            let resultAjax = SendToAjax(url,'GET');
+            //console.log(resultAjax);
+            //return;
+            Swal.fire({
+                title: '<strong>חלוקת שורה</strong>',
+                //icon: 'info',
+                html: resultAjax['html'],
+                width: 1000,
+                showDenyButton: false,
+                denyButtonText: `اغلاق`,
+            }).then((result) => {
+            });
+
+        });
         function InitPage(){
             myRowTable=null;
             $("#id_line").val('0');
