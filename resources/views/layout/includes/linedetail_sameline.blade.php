@@ -8,6 +8,10 @@ linedetail_sameline
     <p>لا توجد معلومات مشابهة من الشهر السابق</p>
 @else
 
+    <div class="container-fluid">
+        <p>חודש {{$formattedLastMonth}}</p>
+
+    </div>
     <table class="table table-striped my-4 w-100" >
         <thead>
         <tr>

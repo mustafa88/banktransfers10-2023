@@ -128,7 +128,7 @@ class BanksdetailController extends Controller
         //return [$formattedLastMonth];
         //return ['A'=>$bankslin_same,'B'=>count($bankslin_same)];
 
-        $tableHtml = view('layout.includes.linedetail_sameline',compact('bankslin_same'))->render();
+        $tableHtml = view('layout.includes.linedetail_sameline',compact('bankslin_same' ,'formattedLastMonth'))->render();
         //
 
         //return view('layout.includes.linedetail_sameline',compact('bankslin_same'));

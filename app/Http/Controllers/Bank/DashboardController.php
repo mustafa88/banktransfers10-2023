@@ -97,7 +97,7 @@ class DashboardController extends Controller
      * @return void
      * להציג יתרות
      */
-    public function balance($year=null){
+    public function balance($project ,$year=null){
         //20/09 - להמשייייייייייייייייך
         /**
          * בכל שנה להצעיג לכל חודש
@@ -113,6 +113,7 @@ class DashboardController extends Controller
          * 1 - عام
          * 2- الطيبة
          */
+        //,$city  - נקבע לפי איזה PROJECT
         if($year==null){
             $year = date('Y');
         }

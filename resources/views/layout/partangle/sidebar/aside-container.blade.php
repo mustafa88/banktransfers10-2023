@@ -31,6 +31,22 @@
                         <li class="sidebar-subnav-header">dashboard</li>
                         <li class=" "><a href="{{route('dashboard.banklines')}}" title="שורות בנק"><span>שורות בנק</span></a></li>
 
+                        <li class=" "><a href="#dashbalance" title="יתרה عطاء" data-toggle="collapse"><em class="fas fa-angle-left"></em><span>יתרה عطاء</span></a>
+
+                            <ul class="sidebar-nav sidebar-subnav collapse" id="dashbalance">
+                                <li class="sidebar-subnav-header">יתרה عطاء</li>
+
+                                <li class=" ">
+                                    <a href="{{route('dashboard.balance','1')}}" title="عطاء المحتاجين"><span>عطاء المحتاجين</span></a>
+                                    <a href="{{route('dashboard.balance','3')}}" title="عطاء لليتيم"><span>عطاء لليتيم</span></a>
+                                    <a href="{{route('dashboard.balance','2')}}" title="عطاء المريض"><span>عطاء المريض</span></a>
+                                </li>
+
+
+                            </ul>
+                        </li>
+
+
                     </ul>
                 </li>
 
