@@ -81,8 +81,8 @@ Route::get('/', function () {
 
 Route::group(['prefix' => 'dashboard', 'namespace' => 'Bank', 'middleware' => ['web']], function () {
     Route::get('state_bank_lines/{year?}', [DashboardController::class ,'bankLines'])->name('dashboard.banklines');
-    //http://127.0.0.1:8000/dashboard/balance
-    Route::get('balance//{id_projc}/{year?}', [DashboardController::class ,'balance'])->name('dashboard.balance');
+    //יתרות לכל עמותה - זכות חובה לכל חודש
+    Route::get('balance/{id_projc}', [DashboardController::class ,'balance'])->name('dashboard.balance');
 });
 
 //Start project

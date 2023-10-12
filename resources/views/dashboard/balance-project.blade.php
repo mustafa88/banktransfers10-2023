@@ -12,15 +12,14 @@
 
 
     <div class="row">
-        <div class="col-xl-8 offset-md-2">
+        <div class="">
 
             <div class="card card-default">
-                <div class="card-header"> Inline form</div>
                 <div class="card-body">
                     <form>
                         <fieldset>
                             <div class="form-group row">
-                                <label class="col-md-2 col-form-label">السنة</label>
+                                <label class="col-md-2 col-form-label">السنة</label> {{Request::get('year')}}
                                 <div class="col-md-10">
                                     <select class="custom-select custom-select-lg mb-3" id="selectyear">
                                         @foreach($arrYear as $item)
@@ -34,7 +33,9 @@
                 </div>
             </div>
 
-            @foreach($banks as $item)
+
+
+            @foreach($resultProgram as $item)
                 <div class="card card-default">
                     <div class="card-header"></div>
                     <div class="card-body">
@@ -42,11 +43,10 @@
                             <table class="table table-striped">
                                 <thead>
                                 <tr>
-                                    <th colspan="13">
-                                        {{$item['enterprise']['name']}}
-                                        @if(isset($item['projects']['name']))
-                                            {{$item['projects']['name']}}
-                                        @endif
+                                    <th colspan="13">.
+                                        {{$item['city']['city_name']}} =====
+                                        [יתרת פתיחה שנה={{number_format($item['ytraopen'],2)}}] =====
+                                        [יתרת סגירת שנה={{number_format($item['ytraclose'],2)}}]
                                     </th>
 
                                 </tr>
@@ -61,29 +61,32 @@
 
                                 <tr>
                                     @foreach($item['arrProg'][1] as $key3 =>$item3)
-                                        <td @if(is_numeric($item3))class="table-info"@endif >{{$item3}}</td>
+                                        <td @if(is_numeric($item3))class=""@endif >@if(is_numeric($item3)){{number_format($item3,2)}} @else {{$item3}}@endif </td>
                                     @endforeach
                                 </tr>
-                                <tr >
-                                    @foreach($item['arrProg'][2] as  $key3 =>$item3)
-                                        <td class = "
-                                                    @if(is_numeric($item['arrProg'][1][$key3]))
-                                                        @if($item3=='-')
-                                                        table-success
-                                                        @else
-                                                        table-danger
-                                                        @endif
-                                                    @endif
-                                                    ">{{$item3}}</td>
-@endforeach
-</tr>
 
-</tbody>
-</table>
-</div>
-</div>
-</div>
-@endforeach
+                                <tr>
+                                    @foreach($item['arrProg'][2] as $key3 =>$item3)
+                                        <td @if(is_numeric($item3))class=""@endif >@if(is_numeric($item3)){{number_format($item3,2)}} @else {{$item3}}@endif </td>
+                                    @endforeach
+                                </tr>
+
+                                <tr>
+                                    @foreach($item['arrProg'][3] as $key3 =>$item3)
+                                        <td @if(is_numeric($item3))
+                                                class="@if($item3<0) text-danger @else text-success @endif"
+                                            @endif >@if(is_numeric($item3)){{number_format($item3,2)}} @else {{$item3}}@endif </td>
+                                    @endforeach
+                                </tr>
+
+
+
+        </tbody>
+        </table>
+        </div>
+        </div>
+        </div>
+        @endforeach
 
 
 
@@ -97,7 +100,7 @@
 
 @section('page-script')
 {{--  load file js from folder public - dashboard --}}
-@include('scripts.dashboard.banklines')
+@include('scripts.dashboard.balance-project')
 
 @endsection
 

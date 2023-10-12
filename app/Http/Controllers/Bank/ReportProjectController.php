@@ -19,8 +19,8 @@ class ReportProjectController extends Controller
         $enterprise = Enterprise::with(['project'])->get();
         if(!isset($requset->fdate))
         {
-            $requset->fdate = '2021-01-01';
-            $requset->tdate = '2021-12-31';
+            $requset->fdate = date('Y-01-01');
+            $requset->tdate = date('Y-12-31');
         }
 
 

@@ -31,20 +31,29 @@
                         <li class="sidebar-subnav-header">dashboard</li>
                         <li class=" "><a href="{{route('dashboard.banklines')}}" title="שורות בנק"><span>שורות בנק</span></a></li>
 
-                        <li class=" "><a href="#dashbalance" title="יתרה عطاء" data-toggle="collapse"><em class="fas fa-angle-left"></em><span>יתרה عطاء</span></a>
+                        @foreach($share_enterprise as $key1 => $item)
 
-                            <ul class="sidebar-nav sidebar-subnav collapse" id="dashbalance">
-                                <li class="sidebar-subnav-header">יתרה عطاء</li>
+                            <li class=" "><a href="#dashbalance_{{$key1}}" title="יתרה {{$item['name']}}" data-toggle="collapse"><em class="fas fa-angle-left"></em><span>יתרה {{$item['name']}}</span></a>
+                                <ul class="sidebar-nav sidebar-subnav collapse" id="dashbalance_{{$key1}}">
+                                    <li class="sidebar-subnav-header">יתרה {{$item['name']}}</li>
+                                    @foreach($item['project'] as $key2 => $item2)
+                                        <li class=" ">
+                                            <a href="{{route('dashboard.balance', $item2['id'] . '?year=') . now()->format('Y')}}" title="{{$item2['name']}}"><span>{{$item2['name']}}</span></a>
+                                        </li>
+                                    @endforeach
+                                    <!--
+                                    <li class=" ">
+                                        <a href="{{route('dashboard.balance','1?year=') . now()->format('Y')}}" title="عطاء المحتاجين"><span>عطاء المحتاجين</span></a>
+                                        <a href="{{route('dashboard.balance','3?year=') . now()->format('Y')}}" title="عطاء لليتيم"><span>عطاء لليتيم</span></a>
+                                        <a href="{{route('dashboard.balance','12?year=') . now()->format('Y')}}" title="فطر صائم"><span>فطر صائم</span></a>
+                                        <a href="{{route('dashboard.balance','2?year=') . now()->format('Y')}}" title="عطاء المريض"><span>عطاء المريض</span></a>
+                                    </li>
+                                    -->
 
-                                <li class=" ">
-                                    <a href="{{route('dashboard.balance','1')}}" title="عطاء المحتاجين"><span>عطاء المحتاجين</span></a>
-                                    <a href="{{route('dashboard.balance','3')}}" title="عطاء لليتيم"><span>عطاء لليتيم</span></a>
-                                    <a href="{{route('dashboard.balance','2')}}" title="عطاء المريض"><span>عطاء المريض</span></a>
-                                </li>
+                                </ul>
+                            </li>
 
-
-                            </ul>
-                        </li>
+                        @endforeach
 
 
                     </ul>

@@ -5,7 +5,7 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <link rel="icon" type="image/x-icon" href="{{ asset('angle/img/favicon.ico') }}">
 <!-- =============== VENDOR STYLES ===============-->
-<title>Angle - Bootstrap Admin Template</title>
+<title>ادارة الحسابات البنكية</title>
 <!-- FONT AWESOME-->
 <link rel="stylesheet" href="{{ asset('angle/vendor/@fortawesome/fontawesome-free/css/brands.css') }}">
 <link rel="stylesheet" href="{{ asset('angle/vendor/@fortawesome/fontawesome-free/css/regular.css') }}">
