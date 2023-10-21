@@ -161,6 +161,54 @@
                 </div>
 
 
+
+                <div class="">
+                    <div class="card card-default">
+                        <div class="card-header text-danger">جدول جميع التبرعات</div>
+                        <div class="card-body">
+                            <div class="table-responsive table-bordered">
+                                @include('layout.includes.displaytable',
+                    ['tableBody' => $income_all_table[$city['id_city']],
+                     'tableKeyBody' => array('dateincome' ,'projects.name','kabala.noformat','kabladat','nameclient','amount','currency.symbol','income.name','titletwo.ttwo_text','phone.noformat','son.noformat','nameovid','note'),
+                     'tableHead' => array('تاريخ' ,'مشروع' ,'رقم الوصل' ,'تاريخ الوصل' ,'اسم المتبرع' ,'مبلغ' ,'العملة','نوع التبرع' ,'طريقة الدفع' ,'هاتف المتبرع' ,'ابن الجمعية' ,'اسم المستقبل' ,'ملاحظه'),
+                     ])
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="">
+                    <div class="card card-default">
+                        <div class="card-header text-danger">جدول جميع المدخولات</div>
+                        <div class="card-body">
+                            <div class="table-responsive table-bordered">
+                                @include('layout.includes.displaytable',
+                    ['tableBody' => $income_all_table[$city['id_city']],
+                     'tableKeyBody' => array('dateincome' ,'projects.name','kabala.noformat','kabladat','nameclient','amount','currency.symbol','income.name','titletwo.ttwo_text','phone.noformat','son.noformat','nameovid','note'),
+                     'tableHead' => array('تاريخ' ,'مشروع' ,'رقم الوصل' ,'تاريخ الوصل' ,'اسم المتبرع' ,'مبلغ' ,'العملة','نوع التبرع' ,'طريقة الدفع' ,'هاتف المتبرع' ,'ابن الجمعية' ,'اسم المستقبل' ,'ملاحظه'),
+                     ])
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{--
+                <div class="">
+                    <div class="card card-default">
+                        <div class="card-header text-danger">جدول جميع المصروفات</div>
+                        <div class="card-body">
+                            <div class="table-responsive table-bordered">
+                                @include('layout.includes.displaytable',
+                    ['tableBody' => $expense_all_table[$city['id_city']],
+                     'tableKeyBody' => array('projects.name' ,'id_expense','amount','numinvoice','dateinvoice','id_titletwo.ttwo_text','dateexpense','asmctaexpense','note'),
+                     'tableHead' => array('مشروع' ,'المورد/شخص' ,'مبلغ' ,'رقم الفاتوره','تاريخ الفاتورة','طريقة الدفع','تاريخ الدفع','אסמכתא','ملاحظه'),
+                     ])
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                --}}
+
             </div>
             @endforeach
         </div>

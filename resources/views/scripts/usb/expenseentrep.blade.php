@@ -145,7 +145,7 @@
             $("#id_proj").val(row.id_proj).change();
             //console.log(row.id_expense);
             if(row.id_expense== null){
-                row.id_expense='0';
+                row.id_expense='999999';
             }
             $("#dateexpense").val(row.dateexpense);
             $("#asmctaexpense").val(row.asmctaexpense);

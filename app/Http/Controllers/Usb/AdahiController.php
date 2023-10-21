@@ -480,8 +480,16 @@ class AdahiController extends Controller
         $ReportPartAdhi = $result;
 
 
+        $ReportAllTableAdahi = Adahi::with('city','titletwo')
+            ->where('datewrite', '>=', $showLineFromDate)
+            ->where('datewrite', '<=', $showLineToDate)
+            ->orderBy('id_city', 'asc')
+            ->get();
+
+
         return view('usb.adahi_Report',
-            compact('totalReportArr','methodBuy','ReportThll','ReportPartAdhi')
+            compact('totalReportArr','methodBuy'
+                ,'ReportThll','ReportPartAdhi','ReportAllTableAdahi')
         )->with(
             [
                 'pageTitle' => "ملخص الاضاحي",

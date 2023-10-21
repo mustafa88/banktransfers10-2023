@@ -295,13 +295,40 @@ class UsbIncomeController extends Controller
             $expense_proj_title[$item_city['id_city']] = $result;
         }
 
+        $income_all_table = [];
+        $expense_all_table = [];
+        foreach ($allCity as $item_city){
+            //טבלת כל ההכנסות
+            $result = Usbincome::with(['enterprise', 'projects', 'city', 'income', 'currency', 'titletwo'])
+                ->where('dateincome', '>=', $showLineFromDate)
+                ->where('dateincome', '<=', $showLineToDate)
+                ->where('id_enter', $id_entrep)
+                ->where('id_city', $item_city['id_city'])
+                ->get();
+            $income_all_table[$item_city['id_city']] = $result;
+
+            //טבלת כל ההוצאות
+            $result = Usbexpense::with(['enterprise','projects','city','expense','titletwo'])
+
+                ->where('dateexpense', '>=', $showLineFromDate)
+                ->where('dateexpense', '<=', $showLineToDate)
+                ->where('id_enter',$id_entrep)
+                ->where('id_city',$item_city['id_city'])
+                ->get();
+            $expense_all_table[$item_city['id_city']] = $result;
+        }
+
+
+
+
+
 
 
         //return $income_title_curr;
         return view('usb.income_expense_Report', compact('id_entrep','enterprise_arr','allCity'
             ,'income_title_curr','income_typeincom_curr'
             ,'income_proj_typeincom_curr','income_title_typeincom_curr'
-            ,'expense_title','expense_proj_title')
+            ,'expense_title','expense_proj_title','income_all_table','expense_all_table')
         )->with(
             [
                 'pageTitle' => "ملخص مدخولات/مصروفات {$a_title}",

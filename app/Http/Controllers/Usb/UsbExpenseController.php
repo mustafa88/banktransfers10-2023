@@ -104,8 +104,8 @@ class UsbExpenseController extends Controller
 
         $usbexpense = Usbexpense::with(['enterprise','projects','city','expense','titletwo'])
 
-            ->where('dateinvoice', '>=', $showLineFromDate)
-            ->where('dateinvoice', '<=', $showLineToDate)
+            ->where('dateexpense', '>=', $showLineFromDate)
+            ->where('dateexpense', '<=', $showLineToDate)
             ->where('id_enter',$id_entrep)
             //->where('id_proj',$id_proj)
             ->where('id_city',$id_city)

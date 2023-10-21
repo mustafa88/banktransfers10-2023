@@ -15,6 +15,17 @@
                 @foreach($tableKeyBody as $item)
                     {{-- אם הערך מתוך מערך ממערך לדוגמא  $item['key1']['key2']--}}
                     {{-- נשלח בצורה הזו key1.key2 --}}
+                    @php
+                        $format_number = true;
+                    @endphp
+                    @if(substr($item,-9)=='.noformat')
+                        @php
+                            $format_number = false;
+                            $item = substr($item,0,-9);
+                        @endphp
+                    @endif
+
+
                     @if (strpos($item, '.') !== false)
                         @php
 
@@ -39,7 +50,7 @@
 
                     @endif
                     <td>
-                        @if(is_numeric($val_item)){{ number_format($val_item,2) }}@else {{$val_item}} @endif
+                        @if($format_number==true and is_numeric($val_item)){{ number_format($val_item,2) }}@else {{$val_item}} @endif
                     </td>
                 @endforeach
 @else
